@@ -1,4 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="purple">#5a2a4d</color>
+    <color name="deep_purple_50">#ede7f6</color>
+    <color name="deep_purple_500">#673ab7</color>
+    <color name="deep_purple_700">#512da8</color>
+
+    <color name="deep_orange_accent">#ff5722</color>
+
+
+
+    <color name="layouts_background">#ede7f6</color>
+
 </resources>

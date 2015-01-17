@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <dimen name="repo_list_avatar">40dp</dimen>
+    <dimen name="repo_list_owner">120dp</dimen>
+    <dimen name="repo_list_owner_pad">10dp</dimen>
+    <dimen name="repo_list_forks">30dp</dimen>
+    <dimen name="repo_list_watchers">30dp</dimen>
+
+</resources>

@@ -6,6 +6,9 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Base64;
 import android.util.Log;
+import android.widget.Toast;
+
+import com.google.gson.JsonObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -21,6 +24,8 @@ import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import retrofit.client.Header;
 import retrofit.client.Response;
+import ru.seriousmike.testgithubclient.ghservice.data.Commit;
+import ru.seriousmike.testgithubclient.ghservice.data.Repository;
 import ru.seriousmike.testgithubclient.ghservice.data.RequestCallback;
 import ru.seriousmike.testgithubclient.ghservice.data.TokenRequest;
 import ru.seriousmike.testgithubclient.ghservice.data.AuthorizationResult;
@@ -39,8 +44,12 @@ public class GitHubAPI {
     public static final String API_URL = "https://api.github.com";
 
     public static final int ERR_CODE_UNAUTH = 401;
+    public static final int ERR_CODE_FORBIDDEN = 403;
+    public static final int ERR_CODE_CONFLICT = 409;
     public static final int ERR_CODE_UNKONWN_ERROR = 666;
     public static final int ERR_CODE_NO_INTERNET = 665;
+
+
     private static final String ERR_MSG_NULL_CONTEXT = "NULL CONTEXT FOUND! Error accessing SharedPreferences";
 
     private static GitHubAPI sInstance;
@@ -58,10 +67,10 @@ public class GitHubAPI {
         RequestInterceptor requestInterceptor = new RequestInterceptor() {
             @Override
             public void intercept(RequestInterceptor.RequestFacade request) {
-                Log.i(TAG, "RequestInterceptor intercepts headers!!");
+                request.addHeader("Accept", "application/vnd.github.v3.raw+json");
+                request.addHeader("Accept-Encoding", "deflate"); // ответ в gzip идет с Transfer-Encoding: chunked и где-то там в библиотеке происходит краш
                 request.addHeader("User-Agent", GHConfig.USER_AGENT);
                 if(mToken !=null) {
-                    Log.i(TAG, "RequestInterceptor got token: "+ mToken);
                     request.addHeader("Authorization", "token " + mToken);
                 }
             }
@@ -95,7 +104,14 @@ public class GitHubAPI {
         return sInstance;
     }
 
+    public static GitHubAPI getInstance() {
+        return sInstance;
+    }
 
+    /**
+     * получает инфы об авторизованном пользователе
+     * @param cb
+     */
     public void getBasicUserInfo(final RequestCallback<UserInfo> cb) {
 
         mService.getBasicUserInfo(new Callback<UserInfo>() {
@@ -114,6 +130,55 @@ public class GitHubAPI {
         });
     }
 
+    /**
+     * получение
+     */
+    public void getRepositoryCommits(String owner, String repository, final RequestCallback<List<Commit>> cb) {
+        Log.i(TAG,"getRepositoryCommits "+owner+"/"+repository);
+        mService.getRepositoryCommits(owner, repository, new Callback<List<Commit>>() {
+            @Override
+            public void success(List<Commit> commitList, Response response2) {
+                for(Commit commit : commitList) {
+                    Log.i(TAG, commit.toString());
+                }
+                cb.onSuccess(commitList);
+            }
+
+//            @Override
+//            public void success(Response commitList, Response response2) {
+//                logResponse(commitList);
+//                logBody(commitList);
+//            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                cb.onFailure(defineError(error));
+            }
+        });
+    }
+
+
+
+    /**
+     * получает список доступных репозиториев
+     * @param cb
+     */
+    public void getRepositoriesList(final RequestCallback<List<Repository>> cb) {
+        mService.getRepositoriesList(new Callback<List<Repository>>() {
+            @Override
+            public void success(List<Repository> repositoryList, Response response2) {
+                cb.onSuccess(repositoryList);
+                for(Repository repo : repositoryList) {
+                    Log.i(TAG, repo.toString());
+                }
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                cb.onFailure(defineError(error));
+            }
+        });
+    }
 
 
     /**
@@ -139,7 +204,6 @@ public class GitHubAPI {
                                 if (Arrays.equals(auth.scopes, GHConfig.SCOPES)) {
                                     Log.i(TAG, "Scopes equal " + Arrays.toString(GHConfig.SCOPES));
                                     mToken = auth.token;
-                                    mContext.getSharedPreferences(GHConfig.PREFERENCES, Context.MODE_PRIVATE).edit().putString(VAR_TOKEN, mToken);
                                     break;
                                 } else {
                                     Log.i(TAG, "Scopes UNequal");
@@ -152,6 +216,7 @@ public class GitHubAPI {
 
                     if (mToken != null) {
                         Log.i(TAG, "=== GOT TOKEN " + mToken);
+                        writeToken();
                         getBasicUserInfo(cb);
                     } else {
                         createToken(login, password, new RequestCallback<Response>() {
@@ -202,7 +267,7 @@ public class GitHubAPI {
                     Log.i(TAG, "UPDATED: " + authorizationResult.updated_at);
 
                     mToken = authorizationResult.token;
-
+                    writeToken();
                     cb.onSuccess(response);
                 }
 
@@ -217,13 +282,29 @@ public class GitHubAPI {
     }
 
     /**
+     * записывает полученный токен
+     */
+    private void writeToken() {
+        if(mToken!=null) {
+            Log.i(TAG,"writing to sharedpref token "+mToken);
+            mContext.getSharedPreferences(GHConfig.PREFERENCES, Context.MODE_PRIVATE).edit().putString(VAR_TOKEN, mToken).commit();
+        } else {
+            Log.e(TAG,"WRITING NO TOKEN");
+        }
+    }
+
+
+
+    /**
      * Перехватывает и разбирает стандартные ошибки запросов и отдаёт адекватные сообщения на активность/фрагмент
      * @param error - стандартная ошибка RetrofitError
      */
     private int defineError(RetrofitError error) {
         Log.e(TAG, error.toString());
+
         if(error.getResponse()==null) {
-            if(mContext !=null) {
+
+            if(mContext != null) {
                 ConnectivityManager cm = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
                 NetworkInfo activeNetworkInfo = cm.getActiveNetworkInfo();
                 if(activeNetworkInfo == null || !activeNetworkInfo.isConnected()) {
@@ -233,21 +314,32 @@ public class GitHubAPI {
                 Log.e(TAG,ERR_MSG_NULL_CONTEXT);
             }
             return ERR_CODE_UNKONWN_ERROR;
+
         } else {
-            Log.e(TAG, "Errcode "+error.getResponse().getStatus());
-            StringBuilder errorBody = new StringBuilder();
+
+            JsonObject errorJson = (JsonObject)error.getBodyAs(JsonObject.class);
+            logResponse(error.getResponse());
+
             try {
+
+                StringBuilder errorBody = new StringBuilder();
                 InputStream inputStream = error.getResponse().getBody().in();
                 BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
                 String line;
                 while ((line = br.readLine()) != null) {
                     errorBody.append(line);
                 }
+
+                Log.e(TAG, "ErrorBody: "+errorBody.toString());
+                Toast.makeText(mContext, "#" + error.getResponse().getStatus()+": "+errorJson.get("message").getAsString(), Toast.LENGTH_SHORT).show();
+
             } catch (IOException e) {
                 Log.e(TAG, e.getLocalizedMessage());
+            } catch (NullPointerException e) {
+                Log.e(TAG, "Probably no respone body. "+e.getLocalizedMessage());
             }
-            Log.e(TAG, "ErrorBody: "+errorBody.toString());
             return error.getResponse().getStatus();
+
         }
 
     }

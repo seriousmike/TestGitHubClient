@@ -7,7 +7,6 @@ import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.app.Fragment;
-import android.util.Log;
 
 import ru.seriousmike.testgithubclient.R;
 import ru.seriousmike.testgithubclient.ghservice.GitHubAPI;
@@ -55,7 +54,7 @@ public class ErrorDialogFragment extends DialogFragment {
             alertBuilder.setPositiveButton((titleRepeat!=null?titleRepeat:getString(R.string.retry)), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    ((DialogInteraction)getActivity()).clickedRepeat();
+                    ((DialogInteraction)getActivity()).clickedPositive();
                 }
             });
         }
@@ -64,7 +63,7 @@ public class ErrorDialogFragment extends DialogFragment {
             alertBuilder.setNegativeButton((cancelRepeat!=null?cancelRepeat:getString(R.string.cancel)), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    ((DialogInteraction)getActivity()).clickedCancel();
+                    ((DialogInteraction)getActivity()).clickedNegative();
                 }
             });
         }
@@ -77,7 +76,7 @@ public class ErrorDialogFragment extends DialogFragment {
     @Override
     public void onCancel(DialogInterface dialog) {
         super.onCancel(dialog);
-        ((DialogInteraction)getActivity()).clickedCancel();
+        ((DialogInteraction)getActivity()).clickedNegative();
     }
 
 
@@ -102,8 +101,8 @@ public class ErrorDialogFragment extends DialogFragment {
      * Интерфейс для обратного зваимодействия активности и фрагмента диалога
      */
     public interface DialogInteraction {
-        public void clickedRepeat();
-        public void clickedCancel();
+        public void clickedPositive();
+        public void clickedNegative();
     }
 
 }

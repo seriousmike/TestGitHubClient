@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+          android:orientation="horizontal"
+          android:paddingLeft="@dimen/activity_horizontal_margin"
+          android:paddingRight="@dimen/activity_horizontal_margin"
+          android:paddingTop="10dp"
+          android:paddingBottom="10dp"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content">
+
+    <ImageView android:src="@drawable/ic_launcher"
+               android:id="@+id/ivRepoOwnerPic"
+               android:layout_marginRight="@dimen/repo_list_owner_pad"
+               android:layout_width="@dimen/repo_list_avatar"
+               android:layout_height="@dimen/repo_list_avatar" />
+
+    <LinearLayout android:orientation="vertical"
+                  android:layout_weight="1"
+                  android:layout_width="0dp"
+                  android:layout_height="wrap_content">
+        <TextView
+            android:text="respoitory name"
+            android:textStyle="bold"
+            android:id="@+id/tvRepoName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+        <TextView
+            android:text="somerepository description and anothwe repository description and some more repository description"
+            android:id="@+id/tvRepoDescription"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+
+
+    <TextView android:id="@+id/tvRepoOwner"
+              android:text="owner"
+              android:layout_width="@dimen/repo_list_owner"
+              android:layout_height="wrap_content" />
+
+    <TextView android:id="@+id/tvRepoForksWatchers"
+              android:text="999\n999"
+              android:gravity="right"
+              android:layout_width="@dimen/repo_list_forkswatchers"
+              android:layout_height="wrap_content" />
+
+
+
+</LinearLayout>

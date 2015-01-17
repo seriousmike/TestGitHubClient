@@ -1,5 +1,19 @@
 <resources>
     <!-- Default screen margins, per the Android Design guidelines. -->
-    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_horizontal_margin">10dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
+
+
+    <dimen name="repo_list_avatar">20dp</dimen>
+    <dimen name="repo_list_owner">80dp</dimen>
+    <dimen name="repo_list_owner_pad">5dp</dimen>
+    <dimen name="repo_list_forks">30dp</dimen>
+    <dimen name="repo_list_watchers">30dp</dimen>
+    <dimen name="repo_list_forkswatchers">60dp</dimen>
+
+    <dimen name="commit_list_header_avatar">60dp</dimen>
+    <dimen name="commit_list_hash">60dp</dimen>
+    <dimen name="commit_list_date">80dp</dimen>
+    <dimen name="commit_list_author">100dp</dimen>
+
 </resources>

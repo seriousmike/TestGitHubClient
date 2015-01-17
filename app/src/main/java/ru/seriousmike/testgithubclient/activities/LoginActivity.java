@@ -3,6 +3,7 @@ package ru.seriousmike.testgithubclient.activities;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
+import android.content.Intent;
 import android.os.AsyncTask;
 
 import android.os.Bundle;
@@ -116,6 +117,10 @@ public class LoginActivity extends Activity {
                 public void onSuccess(UserInfo userInfo) {
                     Log.i(TAG, userInfo.name + "/" + userInfo.login);
                     Toast.makeText(LoginActivity.this, userInfo.name + "/" + userInfo.login, Toast.LENGTH_SHORT).show();
+
+                    Intent i = new Intent(LoginActivity.this, RepositoryListActivity.class);
+                    startActivity(i);
+                    finish();
                 }
 
                 @Override
@@ -130,15 +135,6 @@ public class LoginActivity extends Activity {
         }
     }
 
-    private boolean isEmailValid(String email) {
-        //TODO: Replace this with your own logic
-        return email.contains("@");
-    }
-
-    private boolean isPasswordValid(String password) {
-        //TODO: Replace this with your own logic
-        return password.length() > 4;
-    }
 
     /**
      * Shows the progress UI and hides the login form.
