@@ -5,4 +5,11 @@
         <!-- Customize your theme here. -->
     </style>
 
+
+    <style name="HeaderSection">
+        <item name="android:background">@color/deep_purple_500</item>
+        <item name="android:textColor">@color/section_text_primary</item>
+        <item name="android:color">@color/section_text_primary</item>
+    </style>
+
 </resources>

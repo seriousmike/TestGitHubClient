@@ -23,10 +23,12 @@
     <string name="title_activity_login">Авторизация</string>
 
     <!-- СПИСОК РЕПОЗИТОРИЕВ / ГЛАВНЫЙ ЭКРАН -->
-    <string name="greetings">Здравствуй, </string>
+    <string name="greetings">Репозитории пользователя </string>
     <string name="th_repository">Репзоиторий</string>
-    <string name="th_iowner">Владелец</string>
+    <string name="th_owner">Владелец</string>
     <string name="th_frks_wtchr">frks\nwtchr</string>
+    <string name="th_frks">frks</string>
+    <string name="th_wtchr">wtchr</string>
     <string name="no_repositories">Похоже, доступных репозиториев нет</string>
 
     <!-- СПИСОК КОММИОТОВ РЕПОЗИТОРИЯ -->

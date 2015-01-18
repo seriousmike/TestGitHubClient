@@ -37,33 +37,38 @@ public class RepositoryListFragment extends AlerterInterfaceFragment {
 
     private ListView mListView;
     private ArrayList<Repository> mRepos;
+    private RepositoryListAdapter mAdapter;
 
     public RepositoryListFragment() {}
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
         View layout = inflater.inflate(R.layout.fragment_repository_list, parent, false);
-        ((TextView)layout.findViewById(R.id.tvUserName)).setText(GitHubAPI.getInstance(getActivity().getApplicationContext()).getCurrentUser().name);
 
-
-        //TODO добавить в листхэдер всякое о пользователе
-        mRepos = new ArrayList<Repository>();
+        mRepos = new ArrayList<>();
         mListView = (ListView) layout.findViewById(R.id.listRepositories);
-        mListView.setAdapter( new RepositoryListAdapter(getActivity(), mRepos) );
+
+        View header = inflater.inflate(R.layout.list_header_repositories, mListView, false);
+        ((TextView)header.findViewById(R.id.tvUserName)).setText(getString(R.string.greetings)+"\n"+GitHubAPI.getInstance(getActivity().getApplicationContext()).getCurrentUser().name);
+        mListView.addHeaderView(header);
+
+        mAdapter = new RepositoryListAdapter(getActivity(), mRepos);
+
+        mListView.setAdapter( mAdapter );
         mListView.setOnItemClickListener(new ListView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent i = new Intent(getActivity(), RepositoryActivity.class);
 
-                Log.i(TAG, ((RepositoryListAdapter) mListView.getAdapter()).getItem(position).toString());
+                Log.i(TAG, mAdapter.getItem(position).toString());
 
-                        i.putExtra(RepositoryActivity.EXTRA_REPO, ((RepositoryListAdapter) mListView.getAdapter()).getItem(position).name);
-                i.putExtra(RepositoryActivity.EXTRA_OWNER, ((RepositoryListAdapter)mListView.getAdapter()).getItem(position).owner.login );
+                i.putExtra(RepositoryActivity.EXTRA_REPO, mAdapter.getItem(position).name);
+                i.putExtra(RepositoryActivity.EXTRA_OWNER, mAdapter.getItem(position).owner.login );
                 // т.к. данные о репозитории не кэшируются, а повторный запрос делать не стоит, отправляем нужные данные репозитория в интенте
-                i.putExtra(RepositoryActivity.EXTRA_RI_ONWER_PIC, ((RepositoryListAdapter)mListView.getAdapter()).getItem(position).owner.avatar_url);
-                i.putExtra(RepositoryActivity.EXTRA_RI_DESCR, ((RepositoryListAdapter)mListView.getAdapter()).getItem(position).description);
-                i.putExtra(RepositoryActivity.EXTRA_RI_CREATED, Helper.formatDate( ((RepositoryListAdapter)mListView.getAdapter()).getItem(position).created_at, Helper.FORMAT_DATETIME_SL));
-                i.putExtra(RepositoryActivity.EXTRA_RI_PUSHED, Helper.formatDate( ((RepositoryListAdapter)mListView.getAdapter()).getItem(position).pushed_at, Helper.FORMAT_DATETIME_SL));
+                i.putExtra(RepositoryActivity.EXTRA_RI_ONWER_PIC, mAdapter.getItem(position).owner.avatar_url);
+                i.putExtra(RepositoryActivity.EXTRA_RI_DESCR, mAdapter.getItem(position).description);
+                i.putExtra(RepositoryActivity.EXTRA_RI_CREATED, Helper.formatDate( mAdapter.getItem(position).created_at, Helper.FORMAT_DATETIME_SL));
+                i.putExtra(RepositoryActivity.EXTRA_RI_PUSHED, Helper.formatDate( mAdapter.getItem(position).pushed_at, Helper.FORMAT_DATETIME_SL));
 
                 startActivity(i);
             }
@@ -73,7 +78,7 @@ public class RepositoryListFragment extends AlerterInterfaceFragment {
             @Override
             public void onSuccess(List<Repository> repositoryList) {
                 mRepos.addAll(repositoryList);
-                ((RepositoryListAdapter)mListView.getAdapter()).notifyDataSetChanged();
+                mAdapter.notifyDataSetChanged();
             }
 
             @Override
