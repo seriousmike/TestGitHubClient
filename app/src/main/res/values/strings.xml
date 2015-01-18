@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">TestGitHubClient</string>
+    <string name="app_name">Test GitHub Client</string>
 
     <string name="loading">...ЗАГРУЗКА...</string>
+    <string name="pull_to_refresh">Потяните, чтобы обновить</string>
+
+    <string name="na">N/A</string>
 
     <!-- AlertDialogFragment -->
     <string name="retry">Повторить</string>
@@ -21,9 +24,20 @@
 
     <!-- СПИСОК РЕПОЗИТОРИЕВ / ГЛАВНЫЙ ЭКРАН -->
     <string name="greetings">Здравствуй, </string>
+    <string name="th_repository">Репзоиторий</string>
+    <string name="th_iowner">Владелец</string>
+    <string name="th_frks_wtchr">frks\nwtchr</string>
+    <string name="no_repositories">Похоже, доступных репозиториев нет</string>
 
     <!-- СПИСОК КОММИОТОВ РЕПОЗИТОРИЯ -->
     <string name="no_commits">Похоже, ещё не было ни одного коммита</string>
+    <string name="repo_created">Создан: </string>
+    <string name="repo_pushed">Обновлён: </string>
+    <string name="repo_owner">Владелец: </string>
+    <string name="repo_description">Описание: </string>
+    <string name="th_commit">Коммит</string>
+    <string name="th_author">Автор</string>
+    <string name="th_date">Дата</string>
 
 
 

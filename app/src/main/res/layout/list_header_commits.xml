@@ -4,6 +4,7 @@
               android:paddingBottom="@dimen/activity_vertical_margin"
               android:paddingLeft="@dimen/activity_horizontal_margin"
               android:paddingRight="@dimen/activity_horizontal_margin"
+              android:background="@color/deep_purple_500"
               android:layout_width="match_parent"
               android:layout_height="wrap_content">
 
@@ -11,46 +12,81 @@
         android:layout_alignParentTop="true"
         android:id="@+id/ivRepoOwnerPic"
         android:layout_marginRight="10dp"
-        android:layout_marginBottom="10dp"
         android:src="@drawable/ic_launcher"
         android:layout_width="@dimen/commit_list_header_avatar"
         android:layout_height="@dimen/commit_list_header_avatar"
         />
-
-    <TextView
-        android:id="@+id/tvRepoName"
-        android:text="repo"
+    <TableLayout
+        android:id="@+id/tlRepoInfo"
         android:layout_toRightOf="@id/ivRepoOwnerPic"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
-    <TextView
-        android:id="@+id/tvRepoOwner"
-        android:text="owner"
-        android:layout_alignLeft="@id/tvRepoName"
-        android:layout_below="@id/tvRepoName"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content">
+        <TableRow>
+            <TextView
+                android:id="@+id/tvRepoName"
+                android:textStyle="bold"
+                android:textColor="@color/section_text_primary"
+                android:text="repo"
+                android:layout_span="2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+        </TableRow>
 
-    <TextView
-        android:id="@+id/tvRepoDateCreated"
-        android:text="date created"
-        android:layout_alignLeft="@id/tvRepoName"
-        android:layout_below="@id/tvRepoOwner"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
 
-    <TextView
-        android:id="@+id/tvRepoDateUpdated"
-        android:text="date updated"
-        android:layout_alignLeft="@id/tvRepoDateCreated"
-        android:layout_below="@id/tvRepoDateCreated"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        <TableRow>
+            <TextView
+                android:paddingRight="@dimen/repoinfo_table_td_padding"
+                android:text="@string/repo_owner"
+                android:textColor="@color/section_text_primary"
+                android:textStyle="bold"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+            <TextView
+                android:id="@+id/tvRepoOwner"
+                android:textColor="@color/section_text_primary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+        </TableRow>
+
+        <TableRow>
+            <TextView
+                android:paddingRight="@dimen/repoinfo_table_td_padding"
+                android:text="@string/repo_created"
+                android:textColor="@color/section_text_primary"
+                android:textStyle="bold"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:id="@+id/tvRepoDateCreated"
+                android:textColor="@color/section_text_primary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+        </TableRow>
+
+        <TableRow>
+            <TextView
+                android:paddingRight="@dimen/repoinfo_table_td_padding"
+                android:text="@string/repo_pushed"
+                android:textColor="@color/section_text_primary"
+                android:textStyle="bold"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+            <TextView
+                android:id="@+id/tvRepoDatePushed"
+                android:textColor="@color/section_text_primary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+        </TableRow>
+
+    </TableLayout>
 
     <TextView
         android:id="@+id/tvRepoDescription"
         android:text="description"
-        android:layout_below="@id/tvRepoDateUpdated"
+        android:layout_marginTop="10dp"
+        android:textColor="@color/section_text_secondary"
+        android:layout_below="@id/ivRepoOwnerPic"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 

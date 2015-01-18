@@ -11,9 +11,11 @@
     <dimen name="repo_list_watchers">30dp</dimen>
     <dimen name="repo_list_forkswatchers">60dp</dimen>
 
-    <dimen name="commit_list_header_avatar">60dp</dimen>
+    <dimen name="commit_list_header_avatar">75dp</dimen>
     <dimen name="commit_list_hash">60dp</dimen>
     <dimen name="commit_list_date">80dp</dimen>
     <dimen name="commit_list_author">100dp</dimen>
+
+    <dimen name="repoinfo_table_td_padding">5dp</dimen>
 
 </resources>

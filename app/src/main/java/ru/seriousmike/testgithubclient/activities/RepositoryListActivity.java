@@ -2,6 +2,7 @@ package ru.seriousmike.testgithubclient.activities;
 
 import android.app.Fragment;
 
+import ru.seriousmike.testgithubclient.core.SingleFragmentActivity;
 import ru.seriousmike.testgithubclient.fragments.RepositoryListFragment;
 
 /**

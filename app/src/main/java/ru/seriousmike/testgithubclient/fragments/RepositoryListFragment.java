@@ -3,6 +3,7 @@ package ru.seriousmike.testgithubclient.fragments;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,7 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,16 +26,19 @@ import ru.seriousmike.testgithubclient.core.AlerterInterfaceFragment;
 import ru.seriousmike.testgithubclient.ghservice.GitHubAPI;
 import ru.seriousmike.testgithubclient.ghservice.data.Repository;
 import ru.seriousmike.testgithubclient.ghservice.data.RequestCallback;
+import ru.seriousmike.testgithubclient.helpers.Helper;
 
 /**
  * Created by SeriousM on 14.01.2015.
  */
 public class RepositoryListFragment extends AlerterInterfaceFragment {
 
-    public RepositoryListFragment() {}
+    private static final String TAG = "sm_RepositoryListFragment";
 
     private ListView mListView;
     private ArrayList<Repository> mRepos;
+
+    public RepositoryListFragment() {}
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
@@ -49,8 +54,17 @@ public class RepositoryListFragment extends AlerterInterfaceFragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent i = new Intent(getActivity(), RepositoryActivity.class);
-                i.putExtra(RepositoryActivity.EXTRA_REPO, ((RepositoryListAdapter)mListView.getAdapter()).getItem(position).name );
+
+                Log.i(TAG, ((RepositoryListAdapter) mListView.getAdapter()).getItem(position).toString());
+
+                        i.putExtra(RepositoryActivity.EXTRA_REPO, ((RepositoryListAdapter) mListView.getAdapter()).getItem(position).name);
                 i.putExtra(RepositoryActivity.EXTRA_OWNER, ((RepositoryListAdapter)mListView.getAdapter()).getItem(position).owner.login );
+                // т.к. данные о репозитории не кэшируются, а повторный запрос делать не стоит, отправляем нужные данные репозитория в интенте
+                i.putExtra(RepositoryActivity.EXTRA_RI_ONWER_PIC, ((RepositoryListAdapter)mListView.getAdapter()).getItem(position).owner.avatar_url);
+                i.putExtra(RepositoryActivity.EXTRA_RI_DESCR, ((RepositoryListAdapter)mListView.getAdapter()).getItem(position).description);
+                i.putExtra(RepositoryActivity.EXTRA_RI_CREATED, Helper.formatDate( ((RepositoryListAdapter)mListView.getAdapter()).getItem(position).created_at, Helper.FORMAT_DATETIME_SL));
+                i.putExtra(RepositoryActivity.EXTRA_RI_PUSHED, Helper.formatDate( ((RepositoryListAdapter)mListView.getAdapter()).getItem(position).pushed_at, Helper.FORMAT_DATETIME_SL));
+
                 startActivity(i);
             }
         });
@@ -109,3 +123,4 @@ public class RepositoryListFragment extends AlerterInterfaceFragment {
 
 
 }
+

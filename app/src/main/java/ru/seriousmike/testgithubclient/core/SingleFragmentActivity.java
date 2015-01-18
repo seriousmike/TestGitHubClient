@@ -1,4 +1,4 @@
-package ru.seriousmike.testgithubclient.activities;
+package ru.seriousmike.testgithubclient.core;
 
 import android.app.Activity;
 import android.app.DialogFragment;
