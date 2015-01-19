@@ -15,9 +15,8 @@
         style="@style/CommitsListTableAlike"
         android:text="qweqweqwe\nasdasdasdasd\nadsasdasdsad\nasdsa"
         android:layout_weight="1"
-        android:maxLines="3"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"/>
+        android:layout_height="fill_parent"/>
     <TextView
         android:id="@+id/tvCommitAuthor"
         style="@style/CommitsListTableAlike"
@@ -25,7 +24,9 @@
     <TextView
         android:id="@+id/tvCommitDate"
         style="@style/CommitsListTableAlike"
+        android:minLines="2"
         android:paddingRight="@dimen/activity_horizontal_margin"
+        android:layout_height="fill_parent"
         android:layout_width="@dimen/commit_list_date"/>
 
 </LinearLayout>
