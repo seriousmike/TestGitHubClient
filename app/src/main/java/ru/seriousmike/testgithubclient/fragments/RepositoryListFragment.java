@@ -51,6 +51,7 @@ public class RepositoryListFragment extends AlerterInterfaceFragment {
         View header = inflater.inflate(R.layout.list_header_repositories, mListView, false);
         ((TextView)header.findViewById(R.id.tvUserName)).setText(getString(R.string.greetings)+"\n"+GitHubAPI.getInstance(getActivity().getApplicationContext()).getCurrentUser().name);
         mListView.addHeaderView(header);
+        mListView.setHeaderDividersEnabled(true);
 
         mAdapter = new RepositoryListAdapter(getActivity(), mRepos);
 
@@ -58,9 +59,13 @@ public class RepositoryListFragment extends AlerterInterfaceFragment {
         mListView.setOnItemClickListener(new ListView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                // т.к. headerview считается первой позицией, то
+                position--;
+
                 Intent i = new Intent(getActivity(), RepositoryActivity.class);
 
-                Log.i(TAG, mAdapter.getItem(position).toString());
+                Log.i(TAG, position+" "+mAdapter.getItem(position).toString());
 
                 i.putExtra(RepositoryActivity.EXTRA_REPO, mAdapter.getItem(position).name);
                 i.putExtra(RepositoryActivity.EXTRA_OWNER, mAdapter.getItem(position).owner.login );
@@ -77,6 +82,7 @@ public class RepositoryListFragment extends AlerterInterfaceFragment {
         GitHubAPI.getInstance().getRepositoriesList( new RequestCallback<List<Repository>>() {
             @Override
             public void onSuccess(List<Repository> repositoryList) {
+                mRepos.clear();
                 mRepos.addAll(repositoryList);
                 mAdapter.notifyDataSetChanged();
             }
@@ -103,26 +109,53 @@ public class RepositoryListFragment extends AlerterInterfaceFragment {
         public View getView(int position, View convertView, ViewGroup parent) {
             if(convertView==null) {
                 convertView = getActivity().getLayoutInflater().inflate(R.layout.list_item_repository, parent, false);
+
+                ViewHolder holder = new ViewHolder();
+
+                holder.ivOwnerPic = (ImageView) convertView.findViewById(R.id.ivRepoOwnerPic);
+
+                holder.tvRepoOwner = ((TextView)convertView.findViewById(R.id.tvRepoOwner));
+                holder.tvRepoName = ((TextView)convertView.findViewById(R.id.tvRepoName));
+                holder.tvRepoDescription = ((TextView)convertView.findViewById(R.id.tvRepoDescription));
+                if(convertView.findViewById(R.id.tvRepoForksWatchers)!=null) {
+                    holder.tvRepoForksWatchers =  ((TextView)convertView.findViewById(R.id.tvRepoForksWatchers));
+                } else {
+                    holder.tvRepoForks = ((TextView)convertView.findViewById(R.id.tvRepoForks));
+                    holder.tvRepoWatchers = ((TextView)convertView.findViewById(R.id.tvRepoWatchers));
+                }
+                convertView.setTag(holder);
             }
 
-            ImageView ownerPic = (ImageView) convertView.findViewById(R.id.ivRepoOwnerPic);
-            Picasso.with(getActivity()).cancelRequest(ownerPic);
+
+            ViewHolder viewHolder = (ViewHolder) convertView.getTag();
+
+            Picasso.with(getActivity()).cancelRequest(viewHolder.ivOwnerPic);
             Picasso.with(getActivity()).load(getItem(position).owner.avatar_url)
                     .resize(getActivity().getResources().getDimensionPixelSize(R.dimen.repo_list_avatar),getActivity().getResources().getDimensionPixelSize(R.dimen.repo_list_avatar))
-                    .into(ownerPic);
+                    .into(viewHolder.ivOwnerPic);
 
-            ((TextView)convertView.findViewById(R.id.tvRepoOwner)).setText(getItem(position).owner.login);
-            ((TextView)convertView.findViewById(R.id.tvRepoName)).setText(getItem(position).name);
-            ((TextView)convertView.findViewById(R.id.tvRepoDescription)).setText(getItem(position).description);
-            if(convertView.findViewById(R.id.tvRepoForksWatchers)!=null) {
-                ((TextView)convertView.findViewById(R.id.tvRepoForksWatchers)).setText(getItem(position).forks_count+"\n"+getItem(position).watchers_count);
+            viewHolder.tvRepoOwner.setText(getItem(position).owner.login);
+            viewHolder.tvRepoName.setText(getItem(position).name);
+            viewHolder.tvRepoDescription.setText(getItem(position).description);
+            if(viewHolder.tvRepoForksWatchers!=null) {
+                viewHolder.tvRepoForksWatchers.setText(getItem(position).forks_count+"\n"+getItem(position).watchers_count);
             } else {
-                ((TextView)convertView.findViewById(R.id.tvRepoForks)).setText(getItem(position).forks_count+"");
-                ((TextView)convertView.findViewById(R.id.tvRepoWatchers)).setText(getItem(position).watchers_count+"");
+                viewHolder.tvRepoForks.setText(getItem(position).forks_count+"");
+                viewHolder.tvRepoWatchers.setText(getItem(position).watchers_count+"");
             }
 
 
             return convertView;
+        }
+
+        private class ViewHolder {
+            public ImageView ivOwnerPic;
+            public TextView tvRepoName;
+            public TextView tvRepoOwner;
+            public TextView tvRepoDescription;
+            public TextView tvRepoForksWatchers;
+            public TextView tvRepoForks;
+            public TextView tvRepoWatchers;
         }
     }
 

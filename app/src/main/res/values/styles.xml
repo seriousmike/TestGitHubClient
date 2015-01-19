@@ -6,10 +6,21 @@
     </style>
 
 
-    <style name="HeaderSection">
-        <item name="android:background">@color/deep_purple_500</item>
+    <style name="CommitsListTableAlike">
+        <item name="android:textSize">12sp</item>
+        <item name="android:background">#ffffff</item>
+        <item name="android:paddingTop">@dimen/commit_span_margin_vertical</item>
+        <item name="android:paddingBottom">@dimen/commit_span_margin_vertical</item>
+        <item name="android:paddingLeft">@dimen/commit_span_horizontal_padding</item>
+        <item name="android:paddingRight">@dimen/commit_span_horizontal_padding</item>
+        <item name="android:layout_marginRight">@dimen/commit_span_border_margin</item>
+        <item name="android:layout_height">match_parent</item>
+    </style>
+    <style name="CommitsListTableAlike.TH">
+        <item name="android:textSize">11sp</item>
+        <item name="android:textStyle">bold</item>
         <item name="android:textColor">@color/section_text_primary</item>
-        <item name="android:color">@color/section_text_primary</item>
+        <item name="android:background">@color/deep_purple_500</item>
     </style>
 
 </resources>

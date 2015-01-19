@@ -148,14 +148,30 @@ public class RepositoryFragment extends AlerterInterfaceFragment {
         public View getView(int position, View convertView, ViewGroup parent) {
             if(convertView == null) {
                 convertView = mInflater.inflate(R.layout.list_item_commit, parent, false);
+
+                ViewHolder holder = new ViewHolder();
+                holder.tvName = ((TextView)convertView.findViewById(R.id.tvCommitHash));
+                holder.tvMessage = ((TextView)convertView.findViewById(R.id.tvCommitMsg));
+                holder.tvAuthor = ((TextView)convertView.findViewById(R.id.tvCommitAuthor));
+                holder.tvDate = ((TextView)convertView.findViewById(R.id.tvCommitDate));
+
+                convertView.setTag(holder);
             }
 
-            ((TextView)convertView.findViewById(R.id.tvCommitHash)).setText(getItem(position).getName());
-            ((TextView)convertView.findViewById(R.id.tvCommitMsg)).setText(getItem(position).commit.message);
-            ((TextView)convertView.findViewById(R.id.tvCommitAuthor)).setText(getItem(position).commit.author.name);
-            ((TextView)convertView.findViewById(R.id.tvCommitDate)).setText(getItem(position).getDate());
+            ViewHolder viewHolder = (ViewHolder) convertView.getTag();
+            viewHolder.tvName.setText(getItem(position).getName());
+            viewHolder.tvMessage.setText(getItem(position).commit.message);
+            viewHolder.tvAuthor.setText(getItem(position).commit.author.name);
+            viewHolder.tvDate.setText(getItem(position).getDate());
 
             return convertView;
+        }
+
+        private class ViewHolder {
+            public TextView tvName;
+            public TextView tvMessage;
+            public TextView tvAuthor;
+            public TextView tvDate;
         }
     }
 

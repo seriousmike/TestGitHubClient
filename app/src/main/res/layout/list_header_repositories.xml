@@ -43,7 +43,7 @@
 
         <TextView
             android:textColor="@color/section_text_secondary"
-            android:text="@string/th_repository"
+            android:text="@string/th_repolist_repository"
             android:layout_weight="1"
             android:layout_width="0dp"
             android:layout_gravity="center_vertical"
@@ -52,7 +52,7 @@
 
         <TextView
             android:textColor="@color/section_text_secondary"
-            android:text="@string/th_author"
+            android:text="@string/th_commitlist_author"
             android:layout_gravity="center_vertical"
             android:layout_width="@dimen/repo_list_owner"
             android:layout_height="wrap_content"
@@ -60,7 +60,7 @@
 
         <TextView
             android:textColor="@color/section_text_secondary"
-            android:text="@string/th_frks_wtchr"
+            android:text="@string/th_repolist_frks_wtchr"
             android:gravity="right"
             android:layout_width="@dimen/repo_list_forkswatchers"
             android:layout_height="wrap_content"
