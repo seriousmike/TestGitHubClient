@@ -45,6 +45,7 @@ public class RepositoryFragment extends AlerterInterfaceFragment {
     private ListView mListView;
     private CommitsAdapter mAdapter;
     private List<Commit> mCommits;
+    private View mListStatusView;
 
     private static final int PER_PAGE = 50;
     private int mPage;
@@ -116,6 +117,11 @@ public class RepositoryFragment extends AlerterInterfaceFragment {
         mListView.setAdapter( mAdapter );
         mListView.setClickable(false);
 
+        // отдельная вьюха, которая будет выполнять роль футера для индикации загрузки или сообщения о пустом списке
+        // решено не использовать setEmptyView, чтобы сохранить видимым HeaderView списка и не назначать его повторно в EmptyView
+        mListStatusView = inflater.inflate(R.layout.list_message_view, mListView, false);
+
+
         refreshCommits();
 
         mListView.setOnScrollListener( new AbsListView.OnScrollListener() {
@@ -126,10 +132,10 @@ public class RepositoryFragment extends AlerterInterfaceFragment {
 
             @Override
             public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-                Log.d(TAG,"ONSCROLL !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-                Log.d(TAG,"First "+firstVisibleItem+"; visible "+visibleItemCount+"; total "+totalItemCount);
                 if(!mIsUpdating && !mEndOfTheList) {
                     if( firstVisibleItem+visibleItemCount == totalItemCount && totalItemCount>0) {
+                        Log.d(TAG,"ONSCROLL !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                        Log.d(TAG, "First " + firstVisibleItem + "; visible " + visibleItemCount + "; total " + totalItemCount);
                         loadMoreCommits();
                     }
                 }
@@ -141,6 +147,11 @@ public class RepositoryFragment extends AlerterInterfaceFragment {
 
     public void refreshCommits() {
         mIsUpdating = true;
+
+        mListStatusView.findViewById(R.id.progressBar).setVisibility(View.VISIBLE);
+        mListStatusView.findViewById(R.id.tvEmptyMessage).setVisibility(View.VISIBLE);
+        mListView.addFooterView(mListStatusView);
+
         mEndOfTheList = false;
         mPage = 1;
         Log.i(TAG, "repository "+ getArguments().getString(REPO)+" by "+ getArguments().getString(OWNER));
@@ -148,6 +159,7 @@ public class RepositoryFragment extends AlerterInterfaceFragment {
         GitHubAPI.getInstance().getRepositoryCommits( getArguments().getString(OWNER) ,getArguments().getString(REPO), PER_PAGE, mPage, new RequestCallback<List<Commit>>() {
             @Override
             public void onSuccess(List<Commit> commitList) {
+                mListView.removeFooterView(mListStatusView);
                 mCommits.clear();
                 mCommits.addAll(commitList);
                 mAdapter.notifyDataSetChanged();
@@ -191,7 +203,9 @@ public class RepositoryFragment extends AlerterInterfaceFragment {
 
     private void failureHandler(int error_code) {
         if(error_code==GitHubAPI.ERR_CODE_CONFLICT) {
-            //TODO emptyLists
+            mListStatusView.findViewById(R.id.progressBar).setVisibility(View.GONE);
+            mListStatusView.findViewById(R.id.tvEmptyMessage).setVisibility(View.VISIBLE);
+            ((TextView)(mListStatusView.findViewById(R.id.tvEmptyMessage))).setText(getString(R.string.no_commits));
             //TODO проверить на исключение из репозитория после загрузки списка репозиториев, что будет выдавать? 404?
         } else {
             defaultRequestFailureAction(error_code);
