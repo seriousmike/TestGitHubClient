@@ -43,12 +43,17 @@ public class GitHubAPI {
 
     public static final String API_URL = "https://api.github.com";
 
+
+    private static final String HEADER_LINK = "Link";
+
+
+
+
     public static final int ERR_CODE_UNAUTH = 401;
     public static final int ERR_CODE_FORBIDDEN = 403;
     public static final int ERR_CODE_CONFLICT = 409;
     public static final int ERR_CODE_UNKONWN_ERROR = 666;
     public static final int ERR_CODE_NO_INTERNET = 665;
-
 
     private static final String ERR_MSG_NULL_CONTEXT = "NULL CONTEXT FOUND! Error accessing SharedPreferences";
 
@@ -58,6 +63,7 @@ public class GitHubAPI {
     private GitHub mService;
     private String mToken;
     private UserInfo mUserInfo;
+    private Response mLastResponseHeaders;
 
 
     private GitHubAPI(Context context){
@@ -117,9 +123,10 @@ public class GitHubAPI {
         mService.getBasicUserInfo(new Callback<UserInfo>() {
             @Override
             public void success(UserInfo userInfo, Response response2) {
+                mLastResponseHeaders = response2;
                 mUserInfo = userInfo;
-                Log.i(TAG, "GOT USER BASIC INFO!");
-                logResponse(response2);
+                //Log.i(TAG, "GOT USER BASIC INFO!");
+                //logResponse(response2);
                 cb.onSuccess(userInfo);
             }
 
@@ -133,14 +140,16 @@ public class GitHubAPI {
     /**
      * получение
      */
-    public void getRepositoryCommits(String owner, String repository, final RequestCallback<List<Commit>> cb) {
+    public void getRepositoryCommits(String owner, String repository, int perPage, int currentPage, final RequestCallback<List<Commit>> cb) {
         Log.i(TAG,"getRepositoryCommits "+owner+"/"+repository);
-        mService.getRepositoryCommits(owner, repository, new Callback<List<Commit>>() {
+        mService.getRepositoryCommits(owner, repository, perPage, currentPage, new Callback<List<Commit>>() {
             @Override
             public void success(List<Commit> commitList, Response response2) {
+                mLastResponseHeaders = response2;
                 for(Commit commit : commitList) {
                     Log.i(TAG, commit.toString());
                 }
+                logResponse(response2);
                 cb.onSuccess(commitList);
             }
 
@@ -167,6 +176,7 @@ public class GitHubAPI {
         mService.getRepositoriesList(new Callback<List<Repository>>() {
             @Override
             public void success(List<Repository> repositoryList, Response response2) {
+                mLastResponseHeaders = response2;
                 cb.onSuccess(repositoryList);
                 for(Repository repo : repositoryList) {
                     Log.i(TAG, repo.toString());
@@ -195,8 +205,9 @@ public class GitHubAPI {
             mService.checkAuth(encodedAuthString, new Callback<List<AuthorizationResult>>() {
                 @Override
                 public void success(List<AuthorizationResult> authorizationsList, Response response) {
+                    //TODO либо убрать ручной поиск токенов, либо проверять на постраничность
                     logResponse(response);
-
+                    mLastResponseHeaders = response;
                     if (authorizationsList != null && !authorizationsList.isEmpty()) { // здесь в цикле проверяем доступный список авторизаций на соответствие полей NOTE и SCOPES
                         for (AuthorizationResult auth : authorizationsList) {
                             Log.i(TAG, auth.note + " :: " + auth.id + " :: " + auth.token);
@@ -292,6 +303,29 @@ public class GitHubAPI {
             Log.e(TAG,"WRITING NO TOKEN");
         }
     }
+
+
+    /**
+     * проверяет заголовки последнего запроса на наличие следующей страницы
+     */
+    public boolean hasLastResponseNextPage() {
+        if(mLastResponseHeaders!=null) {
+            List<Header> headerList = mLastResponseHeaders.getHeaders();
+            for(Header header : headerList) {
+                if(header.getName()!=null && header.getName().equals(HEADER_LINK)) {
+                    String value = header.getValue();
+                    return value.contains("rel=\"next\"");
+                }
+            }
+        } else {
+            Log.e(TAG,"Last Response Headers is NULL!");
+        }
+        Log.i(TAG,"Link header not found");
+        return false;
+    }
+
+
+
 
 
 

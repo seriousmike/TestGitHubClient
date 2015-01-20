@@ -7,4 +7,7 @@
     <string name="error_msg_unknown">Неизвестная ошибка!</string>
     <string name="error_msg_unforseen">Непредвиденная ошибка</string>
     <string name="error_msg_unauth">Авторизуйтесь!</string>
+
+    <string name="error_msg_limit_reached">Похоже, часовой лимит запросов к API исчерпан. Повторите попытку позже.</string>
+
 </resources>

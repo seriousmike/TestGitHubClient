@@ -10,6 +10,7 @@ import retrofit.http.GET;
 import retrofit.http.Header;
 import retrofit.http.POST;
 import retrofit.http.Path;
+import retrofit.http.Query;
 import ru.seriousmike.testgithubclient.ghservice.data.Commit;
 import ru.seriousmike.testgithubclient.ghservice.data.Contributor;
 import ru.seriousmike.testgithubclient.ghservice.data.Repository;
@@ -42,6 +43,6 @@ public interface GitHub {
     void getRepositoriesList(Callback<List<Repository>> callback);
 
     @GET("/repos/{owner}/{repo}/commits")
-    void getRepositoryCommits(@Path("owner") String owner, @Path("repo") String repo, Callback<List<Commit>> cb);
+    void getRepositoryCommits(@Path("owner") String owner, @Path("repo") String repo, @Query("per_page") int perPage, @Query("page") int currentPage, Callback<List<Commit>> cb);
 
 }

@@ -89,6 +89,9 @@ public class ErrorDialogFragment extends DialogFragment {
             case GitHubAPI.ERR_CODE_UNKONWN_ERROR:
                 errtxt = getString(R.string.error_msg_unknown);
                 break;
+            case GitHubAPI.ERR_CODE_FORBIDDEN:
+                errtxt = getString(R.string.error_msg_limit_reached);
+                break;
             default:
                 errtxt = getString(R.string.error_msg_unforseen)+" #"+error_code;
         }

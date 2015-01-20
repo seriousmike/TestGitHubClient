@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -44,6 +45,11 @@ public class RepositoryFragment extends AlerterInterfaceFragment {
     private ListView mListView;
     private CommitsAdapter mAdapter;
     private List<Commit> mCommits;
+
+    private static final int PER_PAGE = 50;
+    private int mPage;
+    private boolean mIsUpdating = false;
+    private boolean mEndOfTheList = false;
 
 
     public static RepositoryFragment getInstance(String owner, String repo, HashMap<String,String> repoInfo) {
@@ -111,32 +117,86 @@ public class RepositoryFragment extends AlerterInterfaceFragment {
         mListView.setClickable(false);
 
         refreshCommits();
+
+        mListView.setOnScrollListener( new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+
+            }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                Log.d(TAG,"ONSCROLL !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                Log.d(TAG,"First "+firstVisibleItem+"; visible "+visibleItemCount+"; total "+totalItemCount);
+                if(!mIsUpdating && !mEndOfTheList) {
+                    if( firstVisibleItem+visibleItemCount == totalItemCount && totalItemCount>0) {
+                        loadMoreCommits();
+                    }
+                }
+            }
+        });
+
         return layout;
     }
 
     public void refreshCommits() {
-
+        mIsUpdating = true;
+        mEndOfTheList = false;
+        mPage = 1;
         Log.i(TAG, "repository "+ getArguments().getString(REPO)+" by "+ getArguments().getString(OWNER));
 
-        GitHubAPI.getInstance().getRepositoryCommits( getArguments().getString(OWNER) ,getArguments().getString(REPO), new RequestCallback<List<Commit>>() {
+        GitHubAPI.getInstance().getRepositoryCommits( getArguments().getString(OWNER) ,getArguments().getString(REPO), PER_PAGE, mPage, new RequestCallback<List<Commit>>() {
             @Override
             public void onSuccess(List<Commit> commitList) {
+                mCommits.clear();
                 mCommits.addAll(commitList);
                 mAdapter.notifyDataSetChanged();
+                mIsUpdating = false;
+                if(!GitHubAPI.getInstance().hasLastResponseNextPage()) {
+                    mEndOfTheList = true;
+                }
             }
 
             @Override
             public void onFailure(int error_code) {
-                if(error_code!=GitHubAPI.ERR_CODE_CONFLICT) {
-                    defaultRequestFailureAction(error_code);
-                } else {
-                    //TODO emptyList
-                }
+                failureHandler(error_code);
             }
         });
     }
 
 
+    public void loadMoreCommits() {
+        Log.i(TAG," -- Loading more!");
+        mIsUpdating = true;
+        mPage++;
+        GitHubAPI.getInstance().getRepositoryCommits( getArguments().getString(OWNER) ,getArguments().getString(REPO), PER_PAGE, mPage, new RequestCallback<List<Commit>>() {
+            @Override
+            public void onSuccess(List<Commit> commitList) {
+                mCommits.addAll(commitList);
+                mAdapter.notifyDataSetChanged();
+                mIsUpdating = false;
+                if(!GitHubAPI.getInstance().hasLastResponseNextPage()) {
+                    mEndOfTheList = true;
+                }
+            }
+
+            @Override
+            public void onFailure(int error_code) {
+                mPage--;
+                failureHandler(error_code);
+            }
+        });
+    }
+
+
+    private void failureHandler(int error_code) {
+        if(error_code==GitHubAPI.ERR_CODE_CONFLICT) {
+            //TODO emptyLists
+            //TODO проверить на исключение из репозитория после загрузки списка репозиториев, что будет выдавать? 404?
+        } else {
+            defaultRequestFailureAction(error_code);
+        }
+    }
 
     private class CommitsAdapter extends ArrayAdapter<Commit> {
 
