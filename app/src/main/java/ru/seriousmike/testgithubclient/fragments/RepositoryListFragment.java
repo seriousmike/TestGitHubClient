@@ -15,13 +15,11 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import ru.seriousmike.testgithubclient.R;
 import ru.seriousmike.testgithubclient.activities.RepositoryActivity;
-import ru.seriousmike.testgithubclient.activities.TestActivity;
 import ru.seriousmike.testgithubclient.core.AlerterInterfaceFragment;
 import ru.seriousmike.testgithubclient.ghservice.GitHubAPI;
 import ru.seriousmike.testgithubclient.ghservice.data.Repository;

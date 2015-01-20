@@ -2,6 +2,7 @@ package ru.seriousmike.testgithubclient.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,7 +28,7 @@ import ru.seriousmike.testgithubclient.ghservice.data.RequestCallback;
 /**
  * Created by SeriousM on 17.01.2015.
  */
-public class RepositoryFragment extends AlerterInterfaceFragment {
+public class RepositoryFragment extends AlerterInterfaceFragment implements SwipeRefreshLayout.OnRefreshListener {
 
     private static final String TAG = "sm_RepositoryFragment";
 
@@ -46,6 +47,7 @@ public class RepositoryFragment extends AlerterInterfaceFragment {
     private CommitsAdapter mAdapter;
     private List<Commit> mCommits;
     private View mListStatusView;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
 
     private static final int PER_PAGE = 50;
     private int mPage;
@@ -67,6 +69,10 @@ public class RepositoryFragment extends AlerterInterfaceFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup parentView, Bundle savedInstanceState) {
         mInflater = inflater;
         View layout = inflater.inflate(R.layout.fragment_repository, parentView, false);
+
+        mSwipeRefreshLayout = (SwipeRefreshLayout) layout.findViewById(R.id.swipeRefresher);
+        mSwipeRefreshLayout.setOnRefreshListener(this);
+        mSwipeRefreshLayout.setColorSchemeColors(getResources().getColor(R.color.deep_purple_500), getResources().getColor(R.color.deep_orange_accent) );
 
         mListView = (ListView)layout.findViewById(R.id.listCommits);
 
@@ -179,10 +185,16 @@ public class RepositoryFragment extends AlerterInterfaceFragment {
                 if(!GitHubAPI.getInstance().hasLastResponseNextPage()) {
                     mEndOfTheList = true;
                 }
+                if(mSwipeRefreshLayout.isRefreshing()) {
+                    mSwipeRefreshLayout.setRefreshing(false);
+                }
             }
 
             @Override
             public void onFailure(int error_code) {
+                if(mSwipeRefreshLayout.isRefreshing()) {
+                    mSwipeRefreshLayout.setRefreshing(false);
+                }
                 failureHandler(error_code);
             }
         });
@@ -222,6 +234,11 @@ public class RepositoryFragment extends AlerterInterfaceFragment {
         } else {
             defaultRequestFailureAction(error_code);
         }
+    }
+
+    @Override
+    public void onRefresh() {
+        loadCommits();
     }
 
     private class CommitsAdapter extends ArrayAdapter<Commit> {

@@ -3,7 +3,6 @@ package ru.seriousmike.testgithubclient.core;
 import android.app.Fragment;
 import android.content.Intent;
 import android.util.Log;
-import android.widget.Toast;
 
 import ru.seriousmike.testgithubclient.activities.LoginActivity;
 import ru.seriousmike.testgithubclient.ghservice.GitHubAPI;
