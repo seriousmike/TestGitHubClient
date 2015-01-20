@@ -20,13 +20,13 @@ public class PreloaderActivity extends SingleFragmentActivity {
     }
 
     @Override
-    public void clickedPositive() {
+    public void clickedPositive(int event_code) {
         Log.i(TAG,"clicked repeat");
         ((PreloaderFragment)(getFragmentManager().findFragmentById(R.id.fragmentContainer))).checkAuthorization();
     }
 
     @Override
-    public void clickedNegative() {
+    public void clickedNegative(int event_code) {
         finish();
     }
 }

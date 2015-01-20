@@ -16,7 +16,7 @@ public abstract class AlerterInterfaceFragment extends Fragment {
     private static final String TAG = "sm_AlerterInterfaceFragment";
 
     public interface AlertCaller {
-        public void showAlertDialog(int error_code, boolean enableRepeatButton, boolean enableCancelButton, String customRepeatName, String customCancelName);
+        public void showAlertDialog(int error_code, boolean enablePositiveButton, boolean enableNegativeButton, String customPositiveButtonTitle, String customNegativeButtonTitle);
     }
 
     protected final void defaultRequestFailureAction(int error_code) {

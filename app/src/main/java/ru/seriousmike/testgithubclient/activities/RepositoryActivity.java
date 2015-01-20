@@ -38,7 +38,7 @@ public class RepositoryActivity extends SingleFragmentActivity {
     }
 
     @Override
-    public void clickedPositive() {
+    public void clickedPositive(int event_code) {
         try {
             ((RepositoryFragment) getFragmentManager().findFragmentById(R.id.fragmentContainer)).refreshCommits();
         } catch( NullPointerException e) {
@@ -47,7 +47,7 @@ public class RepositoryActivity extends SingleFragmentActivity {
     }
 
     @Override
-    public void clickedNegative() {
+    public void clickedNegative(int event_code) {
         Log.i(TAG,"user denied repeat");
         finish();
     }

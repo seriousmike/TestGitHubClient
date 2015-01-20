@@ -50,6 +50,14 @@ public class RepositoryListFragment extends AlerterInterfaceFragment {
 
         View header = inflater.inflate(R.layout.list_header_repositories, mListView, false);
         ((TextView)header.findViewById(R.id.tvUserName)).setText(getString(R.string.greetings)+"\n"+GitHubAPI.getInstance(getActivity().getApplicationContext()).getCurrentUser().name);
+
+        header.findViewById(R.id.ibLogout).setOnClickListener( new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((AlertCaller)getActivity()).showAlertDialog(AlertDialogFragment.EVENT_LOGOUT, true, true, getString(R.string.logout), null);
+            }
+        } );
+
         mListView.addHeaderView(header);
         mListView.setHeaderDividersEnabled(true);
 

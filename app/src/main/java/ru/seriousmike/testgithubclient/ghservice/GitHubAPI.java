@@ -304,6 +304,15 @@ public class GitHubAPI {
         }
     }
 
+    /**
+     * логаутит текущего юзера
+     */
+    public void logout() {
+        mUserInfo = null;
+        mToken = null;
+        mLastResponseHeaders = null;
+        mContext.getSharedPreferences(GHConfig.PREFERENCES, Context.MODE_PRIVATE).edit().remove(VAR_TOKEN).commit();
+    }
 
     /**
      * проверяет заголовки последнего запроса на наличие следующей страницы

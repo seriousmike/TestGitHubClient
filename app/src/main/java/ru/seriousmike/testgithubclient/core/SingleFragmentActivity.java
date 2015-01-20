@@ -7,13 +7,12 @@ import android.app.FragmentManager;
 import android.os.Bundle;
 
 import ru.seriousmike.testgithubclient.R;
-import ru.seriousmike.testgithubclient.core.AlerterInterfaceFragment;
-import ru.seriousmike.testgithubclient.fragments.ErrorDialogFragment;
+import ru.seriousmike.testgithubclient.fragments.AlertDialogFragment;
 
 /**
  * Created by SeriousM on 04.01.2015.
  */
-public abstract class SingleFragmentActivity extends Activity implements AlerterInterfaceFragment.AlertCaller, ErrorDialogFragment.DialogInteraction {
+public abstract class SingleFragmentActivity extends Activity implements AlerterInterfaceFragment.AlertCaller, AlertDialogFragment.DialogInteraction {
     protected abstract Fragment createFragment();
 
     @Override
@@ -30,8 +29,8 @@ public abstract class SingleFragmentActivity extends Activity implements Alerter
     }
 
     @Override
-    public void showAlertDialog(int error_code, boolean enableRepeatButton, boolean enableCancelButton, String customRepeatButtonTitle, String customCancelButtonTitle) {
-        DialogFragment alertFragment = ErrorDialogFragment.newInstance(error_code,enableRepeatButton, customRepeatButtonTitle, enableCancelButton,customCancelButtonTitle);
+    public void showAlertDialog(int error_code, boolean enablePositiveButton, boolean enableNegativeButton, String customPositiveButtonTitle, String customNegativeButtonTitle) {
+        DialogFragment alertFragment = AlertDialogFragment.newInstance(error_code, enablePositiveButton, customPositiveButtonTitle, enableNegativeButton, customNegativeButtonTitle);
         alertFragment.show(getFragmentManager(),"dialog");
     }
 

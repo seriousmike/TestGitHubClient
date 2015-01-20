@@ -6,17 +6,19 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.app.Fragment;
 
 import ru.seriousmike.testgithubclient.R;
 import ru.seriousmike.testgithubclient.ghservice.GitHubAPI;
 
 /**
- * A simple {@link Fragment} subclass.
+ * выводит сообщения по коду ошибки/события
  */
-public class ErrorDialogFragment extends DialogFragment {
+public class AlertDialogFragment extends DialogFragment {
 
     private static final String TAG = "sm_ErrorDialogFragment";
+
+    // чтобы не конфликтовать с константами событий GitHubAPI значения местных констант будет отрицательным
+    public static final int EVENT_LOGOUT = -333;
 
     private static final String VAR_ERR_CODE = "error_code";
     private static final String VAR_REPEAT_ENABLED = "repeat_button_enabled";
@@ -24,16 +26,20 @@ public class ErrorDialogFragment extends DialogFragment {
     private static final String VAR_REPEAT_TITLE = "repeat_button_title";
     private static final String VAR_CANCEL_TITLE = "cancel_button_title";
 
-    public ErrorDialogFragment() {}
+    private int mEventCode;
 
-    public static ErrorDialogFragment newInstance(int error_code, boolean enableRepeatButton, String customRepeatButtonTitle, boolean enableCancelButton, String customCancelButtonTitle) {
-        ErrorDialogFragment dialogFragment = new ErrorDialogFragment();
+
+
+    public AlertDialogFragment() {}
+
+    public static AlertDialogFragment newInstance(int error_code, boolean enablePositiveButton, String customPositiveButtonTitle, boolean enableNegativeButton, String customNegativeButtonTitle) {
+        AlertDialogFragment dialogFragment = new AlertDialogFragment();
         Bundle args = new Bundle();
         args.putInt(VAR_ERR_CODE,error_code);
-        args.putBoolean(VAR_REPEAT_ENABLED, enableRepeatButton);
-        args.putBoolean(VAR_CANCEL_ENABLED, enableCancelButton);
-        args.putString(VAR_REPEAT_TITLE, customRepeatButtonTitle);
-        args.putString(VAR_CANCEL_TITLE, customCancelButtonTitle);
+        args.putBoolean(VAR_REPEAT_ENABLED, enablePositiveButton);
+        args.putBoolean(VAR_CANCEL_ENABLED, enableNegativeButton);
+        args.putString(VAR_REPEAT_TITLE, customPositiveButtonTitle);
+        args.putString(VAR_CANCEL_TITLE, customNegativeButtonTitle);
 
         dialogFragment.setArguments(args);
         return dialogFragment;
@@ -42,7 +48,7 @@ public class ErrorDialogFragment extends DialogFragment {
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        int err_code = getArguments().getInt(VAR_ERR_CODE);
+        mEventCode = getArguments().getInt(VAR_ERR_CODE);
         boolean enableRepeatButton = getArguments().getBoolean(VAR_REPEAT_ENABLED);
         boolean enableCancelButton = getArguments().getBoolean(VAR_CANCEL_ENABLED);
         String titleRepeat = getArguments().getString(VAR_REPEAT_TITLE);
@@ -54,7 +60,7 @@ public class ErrorDialogFragment extends DialogFragment {
             alertBuilder.setPositiveButton((titleRepeat!=null?titleRepeat:getString(R.string.retry)), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    ((DialogInteraction)getActivity()).clickedPositive();
+                    ((DialogInteraction)getActivity()).clickedPositive(mEventCode);
                 }
             });
         }
@@ -63,12 +69,12 @@ public class ErrorDialogFragment extends DialogFragment {
             alertBuilder.setNegativeButton((cancelRepeat!=null?cancelRepeat:getString(R.string.cancel)), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    ((DialogInteraction)getActivity()).clickedNegative();
+                    ((DialogInteraction)getActivity()).clickedNegative(mEventCode);
                 }
             });
         }
 
-        alertBuilder.setMessage(getErrorText(err_code));
+        alertBuilder.setMessage(getErrorText(mEventCode));
 
         return alertBuilder.create();
     }
@@ -76,13 +82,13 @@ public class ErrorDialogFragment extends DialogFragment {
     @Override
     public void onCancel(DialogInterface dialog) {
         super.onCancel(dialog);
-        ((DialogInteraction)getActivity()).clickedNegative();
+        ((DialogInteraction)getActivity()).clickedNegative(mEventCode);
     }
 
 
-    public String getErrorText(int error_code) {
+    public String getErrorText(int event_code) {
         String errtxt;
-        switch(error_code) {
+        switch(event_code) {
             case GitHubAPI.ERR_CODE_NO_INTERNET:
                 errtxt = getString(R.string.error_msg_no_internet);
                 break;
@@ -92,8 +98,12 @@ public class ErrorDialogFragment extends DialogFragment {
             case GitHubAPI.ERR_CODE_FORBIDDEN:
                 errtxt = getString(R.string.error_msg_limit_reached);
                 break;
+            case EVENT_LOGOUT:
+                errtxt = getString(R.string.event_trying_to_logout)+" "+GitHubAPI.getInstance().getCurrentUser().login+"?";
+                break;
+
             default:
-                errtxt = getString(R.string.error_msg_unforseen)+" #"+error_code;
+                errtxt = getString(R.string.error_msg_unforseen)+" #"+event_code;
         }
         return errtxt;
     }
@@ -104,8 +114,8 @@ public class ErrorDialogFragment extends DialogFragment {
      * Интерфейс для обратного зваимодействия активности и фрагмента диалога
      */
     public interface DialogInteraction {
-        public void clickedPositive();
-        public void clickedNegative();
+        public void clickedPositive(int event_code);
+        public void clickedNegative(int event_code);
     }
 
 }
