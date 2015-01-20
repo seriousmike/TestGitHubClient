@@ -40,7 +40,7 @@ public class RepositoryActivity extends SingleFragmentActivity {
     @Override
     public void clickedPositive(int event_code) {
         try {
-            ((RepositoryFragment) getFragmentManager().findFragmentById(R.id.fragmentContainer)).refreshCommits();
+            ((RepositoryFragment) getFragmentManager().findFragmentById(R.id.fragmentContainer)).retryRequest();
         } catch( NullPointerException e) {
             Log.e(TAG,"No fragment? "+e.getLocalizedMessage());
         }

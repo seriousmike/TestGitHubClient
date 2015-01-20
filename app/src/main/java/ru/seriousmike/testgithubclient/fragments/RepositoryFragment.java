@@ -122,7 +122,7 @@ public class RepositoryFragment extends AlerterInterfaceFragment {
         mListStatusView = inflater.inflate(R.layout.list_message_view, mListView, false);
 
 
-        refreshCommits();
+        loadCommits();
 
         mListView.setOnScrollListener( new AbsListView.OnScrollListener() {
             @Override
@@ -145,12 +145,24 @@ public class RepositoryFragment extends AlerterInterfaceFragment {
         return layout;
     }
 
-    public void refreshCommits() {
+
+    public void retryRequest() {
+        if(mCommits.size()==0) {
+            loadCommits();
+        } else {
+            loadMoreCommits();
+        }
+    }
+
+
+    private void loadCommits() {
         mIsUpdating = true;
 
         mListStatusView.findViewById(R.id.progressBar).setVisibility(View.VISIBLE);
-        mListStatusView.findViewById(R.id.tvEmptyMessage).setVisibility(View.VISIBLE);
-        mListView.addFooterView(mListStatusView);
+        mListStatusView.findViewById(R.id.tvEmptyMessage).setVisibility(View.GONE);
+        if(mListView.getFooterViewsCount()==0) {
+            mListView.addFooterView(mListStatusView);
+        }
 
         mEndOfTheList = false;
         mPage = 1;
@@ -177,7 +189,7 @@ public class RepositoryFragment extends AlerterInterfaceFragment {
     }
 
 
-    public void loadMoreCommits() {
+    private void loadMoreCommits() {
         Log.i(TAG," -- Loading more!");
         mIsUpdating = true;
         mPage++;

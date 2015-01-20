@@ -37,6 +37,7 @@ public abstract class AlerterInterfaceFragment extends Fragment {
     }
 
     protected void processRequestFailure(int error_code) {
+        //TODO исправить багу при изменини ориентации создаются новые диалоги - setRetainInstance?
         ((AlertCaller)getActivity()).showAlertDialog(error_code, true, false, null, null);
     }
 
