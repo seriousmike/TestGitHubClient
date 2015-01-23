@@ -23,4 +23,15 @@
         <item name="android:background">@color/deep_purple_500</item>
     </style>
 
+
+    <style name="TextButton">
+        <item name="android:background">@drawable/text_button_background</item>
+        <item name="android:paddingTop">10dp</item>
+        <item name="android:paddingBottom">10dp</item>
+        <item name="android:paddingLeft">15dp</item>
+        <item name="android:paddingRight">15dp</item>
+        <item name="android:textColor">#ffffff</item>
+        <item name="android:textStyle">bold</item>
+    </style>
 </resources>
+

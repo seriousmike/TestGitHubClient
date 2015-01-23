@@ -126,9 +126,16 @@ public class RepositoryFragment extends AlerterInterfaceFragment implements Swip
         // отдельная вьюха, которая будет выполнять роль футера для индикации загрузки или сообщения о пустом списке
         // решено не использовать setEmptyView, чтобы сохранить видимым HeaderView списка и не назначать его повторно в EmptyView
         mListStatusView = inflater.inflate(R.layout.list_message_view, mListView, false);
+        mListStatusView.findViewById(R.id.tvRepeatButton).setOnClickListener( new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListStatusView.findViewById(R.id.progressBar).setVisibility(View.VISIBLE);
+                mListStatusView.findViewById(R.id.tvRepeatButton).setVisibility(View.GONE);
+                retryRequest();
+            }
+        });
 
-
-        loadCommits();
+        loadFirstCommits();
 
         mListView.setOnScrollListener( new AbsListView.OnScrollListener() {
             @Override
@@ -151,23 +158,23 @@ public class RepositoryFragment extends AlerterInterfaceFragment implements Swip
         return layout;
     }
 
-
     public void retryRequest() {
-        if(mCommits.size()==0) {
-            loadCommits();
+        if(mSwipeRefreshLayout.isRefreshing() || mCommits.size()==0) {
+            loadFirstCommits();
         } else {
             loadMoreCommits();
         }
     }
 
 
-    private void loadCommits() {
+    private void loadFirstCommits() {
         mIsUpdating = true;
 
         mListStatusView.findViewById(R.id.progressBar).setVisibility(View.VISIBLE);
         mListStatusView.findViewById(R.id.tvEmptyMessage).setVisibility(View.GONE);
         if(mListView.getFooterViewsCount()==0) {
             mListView.addFooterView(mListStatusView);
+            mListView.setFooterDividersEnabled(false);
         }
 
         mEndOfTheList = false;
@@ -181,13 +188,13 @@ public class RepositoryFragment extends AlerterInterfaceFragment implements Swip
                 mCommits.clear();
                 mCommits.addAll(commitList);
                 mAdapter.notifyDataSetChanged();
+
+                cancelRefreshing();
                 mIsUpdating = false;
                 if(!GitHubAPI.getInstance().hasLastResponseNextPage()) {
                     mEndOfTheList = true;
                 }
-                if(mSwipeRefreshLayout.isRefreshing()) {
-                    mSwipeRefreshLayout.setRefreshing(false);
-                }
+
             }
 
             @Override
@@ -208,6 +215,8 @@ public class RepositoryFragment extends AlerterInterfaceFragment implements Swip
         GitHubAPI.getInstance().getRepositoryCommits( getArguments().getString(OWNER) ,getArguments().getString(REPO), PER_PAGE, mPage, new RequestCallback<List<Commit>>() {
             @Override
             public void onSuccess(List<Commit> commitList) {
+                if(mListView.getFooterViewsCount()>0) mListView.removeFooterView(mListStatusView);
+
                 mCommits.addAll(commitList);
                 mAdapter.notifyDataSetChanged();
                 mIsUpdating = false;
@@ -238,7 +247,27 @@ public class RepositoryFragment extends AlerterInterfaceFragment implements Swip
 
     @Override
     public void onRefresh() {
-        loadCommits();
+        loadFirstCommits();
+    }
+
+    public void cancelRefreshing() {
+        if(mSwipeRefreshLayout!=null && mSwipeRefreshLayout.isRefreshing()) {
+            mSwipeRefreshLayout.setRefreshing(false);
+        }
+    }
+
+    public void showRefreshFooter() {
+        mListStatusView.findViewById(R.id.tvRepeatButton).setVisibility(View.VISIBLE);
+        mListStatusView.findViewById(R.id.progressBar).setVisibility(View.GONE);
+        mListStatusView.findViewById(R.id.tvEmptyMessage).setVisibility(View.GONE);
+        if(mListView.getFooterViewsCount()==0) {
+            mListView.addFooterView(mListStatusView);
+        }
+    }
+
+    @Override
+    protected void processRequestFailure(int error_code) {
+        ((AlertCaller)getActivity()).showAlertDialog(error_code, true, true, null, null);
     }
 
     private class CommitsAdapter extends ArrayAdapter<Commit> {

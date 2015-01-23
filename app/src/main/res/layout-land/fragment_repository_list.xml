@@ -1,10 +1,9 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:tools="http://schemas.android.com/tools"
+<android.support.v4.widget.SwipeRefreshLayout  xmlns:android="http://schemas.android.com/apk/res/android"
+              android:id="@+id/swipeRefresher"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:paddingBottom="0dp"
-              android:orientation="vertical"
-              tools:context="ru.seriousmike.testgithubclient.activities.TestActivity">
+              android:orientation="vertical">
 
     <ListView
         android:id="@+id/listRepositories"
@@ -12,4 +11,4 @@
         android:layout_height="match_parent"
         />
 
-</LinearLayout>
+</android.support.v4.widget.SwipeRefreshLayout>

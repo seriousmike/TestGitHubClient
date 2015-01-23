@@ -40,7 +40,7 @@ public interface GitHub {
     void getBasicUserInfo(Callback<UserInfo> callback);
 
     @GET("/user/repos")
-    void getRepositoriesList(Callback<List<Repository>> callback);
+    void getRepositoriesList(@Query("per_page") int perPage, @Query("page") int currentPage, Callback<List<Repository>> callback);
 
     @GET("/repos/{owner}/{repo}/commits")
     void getRepositoryCommits(@Path("owner") String owner, @Path("repo") String repo, @Query("per_page") int perPage, @Query("page") int currentPage, Callback<List<Commit>> cb);

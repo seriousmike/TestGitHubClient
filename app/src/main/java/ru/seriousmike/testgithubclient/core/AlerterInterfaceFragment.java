@@ -31,8 +31,8 @@ public abstract class AlerterInterfaceFragment extends Fragment {
         //TODO сделать проверку на наличие других активностей в стеке... хм, возможно, это нужно сделать в LoginActivity
         Log.i(TAG, "starting login activity");
         Intent i = new Intent(getActivity(), LoginActivity.class);
+        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(i);
-        getActivity().finish();
     }
 
     protected void processRequestFailure(int error_code) {

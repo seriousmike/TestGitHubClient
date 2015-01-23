@@ -73,6 +73,7 @@ public class GitHubAPI {
         RequestInterceptor requestInterceptor = new RequestInterceptor() {
             @Override
             public void intercept(RequestInterceptor.RequestFacade request) {
+                request.addHeader("Cache-Control", "no-cache");
                 request.addHeader("Accept", "application/vnd.github.v3.raw+json");
                 request.addHeader("Accept-Encoding", "deflate"); // ответ в gzip идет с Transfer-Encoding: chunked и где-то там в библиотеке происходит краш
                 request.addHeader("User-Agent", GHConfig.USER_AGENT);
@@ -172,8 +173,8 @@ public class GitHubAPI {
      * получает список доступных репозиториев
      * @param cb
      */
-    public void getRepositoriesList(final RequestCallback<List<Repository>> cb) {
-        mService.getRepositoriesList(new Callback<List<Repository>>() {
+    public void getRepositoriesList(int perPage, int currentPage, final RequestCallback<List<Repository>> cb) {
+        mService.getRepositoriesList(perPage, currentPage, new Callback<List<Repository>>() {
             @Override
             public void success(List<Repository> repositoryList, Response response2) {
                 mLastResponseHeaders = response2;

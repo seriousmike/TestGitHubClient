@@ -3,10 +3,12 @@ package ru.seriousmike.testgithubclient.fragments;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
@@ -29,13 +31,20 @@ import ru.seriousmike.testgithubclient.helpers.Helper;
 /**
  * Created by SeriousM on 14.01.2015.
  */
-public class RepositoryListFragment extends AlerterInterfaceFragment {
+public class RepositoryListFragment extends AlerterInterfaceFragment implements SwipeRefreshLayout.OnRefreshListener {
 
     private static final String TAG = "sm_RepositoryListFragment";
 
     private ListView mListView;
     private ArrayList<Repository> mRepos;
     private RepositoryListAdapter mAdapter;
+    private View mListStatusView;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
+
+    private static final int PER_PAGE = 5;
+    private int mPage;
+    private boolean mIsUpdating = false;
+    private boolean mEndOfTheList = false;
 
     public RepositoryListFragment() {}
 
@@ -45,6 +54,10 @@ public class RepositoryListFragment extends AlerterInterfaceFragment {
 
         mRepos = new ArrayList<>();
         mListView = (ListView) layout.findViewById(R.id.listRepositories);
+
+        mSwipeRefreshLayout = (SwipeRefreshLayout) layout.findViewById(R.id.swipeRefresher);
+        mSwipeRefreshLayout.setOnRefreshListener(this);
+        mSwipeRefreshLayout.setColorSchemeColors(getResources().getColor(R.color.deep_purple_500), getResources().getColor(R.color.deep_orange_accent) );
 
         View header = inflater.inflate(R.layout.list_header_repositories, mListView, false);
         ((TextView)header.findViewById(R.id.tvUserName)).setText(getString(R.string.greetings)+"\n"+GitHubAPI.getInstance(getActivity().getApplicationContext()).getCurrentUser().name);
@@ -85,12 +98,87 @@ public class RepositoryListFragment extends AlerterInterfaceFragment {
             }
         });
 
-        GitHubAPI.getInstance().getRepositoriesList( new RequestCallback<List<Repository>>() {
+        // отдельная вьюха, которая будет выполнять роль футера для индикации загрузки или сообщения о пустом списке
+        // решено не использовать setEmptyView, чтобы сохранить видимым HeaderView списка и не назначать его повторно в EmptyView
+        mListStatusView = inflater.inflate(R.layout.list_message_view, mListView, false);
+        mListStatusView.findViewById(R.id.tvRepeatButton).setOnClickListener( new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListStatusView.findViewById(R.id.progressBar).setVisibility(View.VISIBLE);
+                mListStatusView.findViewById(R.id.tvRepeatButton).setVisibility(View.GONE);
+                retryRequest();
+            }
+        });
+
+        loadFirstRepos();
+
+        mListView.setOnScrollListener( new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+
+            }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                if(!mIsUpdating && !mEndOfTheList) {
+                    if( firstVisibleItem+visibleItemCount == totalItemCount && totalItemCount>0) {
+                        Log.d(TAG,"ONSCROLL !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                        Log.d(TAG, "First " + firstVisibleItem + "; visible " + visibleItemCount + "; total " + totalItemCount);
+                        loadMoreRepos();
+                    }
+                }
+            }
+        });
+
+        return layout;
+    }
+
+
+    public void retryRequest() {
+        if(mSwipeRefreshLayout.isRefreshing() || mRepos.size()==0) {
+            loadFirstRepos();
+        } else {
+            loadMoreRepos();
+        }
+    }
+
+    public void showRefreshFooter() {
+        mListStatusView.findViewById(R.id.tvRepeatButton).setVisibility(View.VISIBLE);
+        mListStatusView.findViewById(R.id.progressBar).setVisibility(View.GONE);
+        mListStatusView.findViewById(R.id.tvEmptyMessage).setVisibility(View.GONE);
+        if(mListView.getFooterViewsCount()==0) {
+            mListView.addFooterView(mListStatusView);
+        }
+
+    }
+
+    private void loadFirstRepos() {
+
+        mPage = 1;
+        mListStatusView.findViewById(R.id.progressBar).setVisibility(View.VISIBLE);
+        mListStatusView.findViewById(R.id.tvEmptyMessage).setVisibility(View.GONE);
+        if(mListView.getFooterViewsCount()==0) {
+            mListView.addFooterView(mListStatusView);
+            mListView.setFooterDividersEnabled(false);
+        }
+
+        mEndOfTheList = false;
+        mPage = 1;
+
+
+        GitHubAPI.getInstance().getRepositoriesList( PER_PAGE, mPage,  new RequestCallback<List<Repository>>() {
             @Override
             public void onSuccess(List<Repository> repositoryList) {
+                mListView.removeFooterView(mListStatusView);
                 mRepos.clear();
                 mRepos.addAll(repositoryList);
                 mAdapter.notifyDataSetChanged();
+
+                cancelRefreshing();
+                mIsUpdating = false;
+                if(!GitHubAPI.getInstance().hasLastResponseNextPage()) {
+                    mEndOfTheList = true;
+                }
             }
 
             @Override
@@ -99,11 +187,60 @@ public class RepositoryListFragment extends AlerterInterfaceFragment {
             }
         });
 
-        return layout;
+
     }
 
 
+    private void loadMoreRepos() {
+        Log.i(TAG," -- Loading more!");
+        mIsUpdating = true;
+        mPage++;
+        GitHubAPI.getInstance().getRepositoriesList( PER_PAGE, mPage, new RequestCallback<List<Repository>>() {
+            @Override
+            public void onSuccess(List<Repository> commitList) {
+                if(mListView.getFooterViewsCount()>0) mListView.removeFooterView(mListStatusView);
 
+                mRepos.addAll(commitList);
+                mAdapter.notifyDataSetChanged();
+                mIsUpdating = false;
+                if(!GitHubAPI.getInstance().hasLastResponseNextPage()) {
+                    mEndOfTheList = true;
+                }
+            }
+
+            @Override
+            public void onFailure(int error_code) {
+                mPage--;
+                failureHandler(error_code);
+            }
+        } );
+    }
+
+    private void failureHandler(int error_code) {
+        if(error_code==GitHubAPI.ERR_CODE_CONFLICT) {
+            mListStatusView.findViewById(R.id.progressBar).setVisibility(View.GONE);
+            mListStatusView.findViewById(R.id.tvEmptyMessage).setVisibility(View.VISIBLE);
+            ((TextView)(mListStatusView.findViewById(R.id.tvEmptyMessage))).setText(getString(R.string.no_commits));
+        } else {
+            defaultRequestFailureAction(error_code);
+        }
+    }
+
+    @Override
+    public void onRefresh() {
+        loadFirstRepos();
+    }
+
+    public void cancelRefreshing() {
+        if(mSwipeRefreshLayout!=null && mSwipeRefreshLayout.isRefreshing()) {
+            mSwipeRefreshLayout.setRefreshing(false);
+        }
+    }
+
+    @Override
+    protected void processRequestFailure(int error_code) {
+        ((AlertCaller)getActivity()).showAlertDialog(error_code, true, true, null, null);
+    }
 
     public class RepositoryListAdapter extends ArrayAdapter<Repository> {
 
