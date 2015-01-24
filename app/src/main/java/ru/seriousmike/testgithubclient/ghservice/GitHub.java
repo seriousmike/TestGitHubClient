@@ -34,7 +34,7 @@ public interface GitHub {
     void createToken(@Header("Authorization") String authorization, @Body TokenRequest request, Callback<AuthorizationResult> callback);
 
     @GET("/authorizations")
-    void checkAuth(@Header("Authorization") String authorization, Callback<List<AuthorizationResult>> callback);
+    void checkAuth(@Header("Authorization") String authorization, @Query("page") int currentPage, Callback<List<AuthorizationResult>> callback);
 
     @GET("/user")
     void getBasicUserInfo(Callback<UserInfo> callback);

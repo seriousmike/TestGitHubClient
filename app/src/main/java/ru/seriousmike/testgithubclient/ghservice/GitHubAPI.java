@@ -17,6 +17,8 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import retrofit.Callback;
 import retrofit.RequestInterceptor;
@@ -200,15 +202,18 @@ public class GitHubAPI {
      */
     public void getAuthorization(final String login, final String password, final RequestCallback<UserInfo> cb) {
         mToken = null;
+        int page = 1;
         try {
             String lgnpsw = login+":"+password;
-            String encodedAuthString = "Basic "+new String( Base64.encode( lgnpsw.getBytes("UTF-8"), Base64.NO_WRAP), "UTF-8" );
-            mService.checkAuth(encodedAuthString, new Callback<List<AuthorizationResult>>() {
+            final String encodedAuthString = "Basic "+new String( Base64.encode( lgnpsw.getBytes("UTF-8"), Base64.NO_WRAP), "UTF-8" );
+            mService.checkAuth(encodedAuthString, page, new Callback<List<AuthorizationResult>>() {
+
                 @Override
                 public void success(List<AuthorizationResult> authorizationsList, Response response) {
-                    //TODO либо убрать ручной поиск токенов, либо проверять на постраничность
+
                     logResponse(response);
                     mLastResponseHeaders = response;
+
                     if (authorizationsList != null && !authorizationsList.isEmpty()) { // здесь в цикле проверяем доступный список авторизаций на соответствие полей NOTE и SCOPES
                         for (AuthorizationResult auth : authorizationsList) {
                             Log.i(TAG, auth.note + " :: " + auth.id + " :: " + auth.token);
@@ -230,7 +235,11 @@ public class GitHubAPI {
                         Log.i(TAG, "=== GOT TOKEN " + mToken);
                         writeToken();
                         getBasicUserInfo(cb);
+                    } else if(hasLastResponseNextPage()) {
+                        int nextPage = getNextPageFromLastResponse();
+                        mService.checkAuth(encodedAuthString, nextPage, this);
                     } else {
+
                         createToken(login, password, new RequestCallback<Response>() {
                             @Override
                             public void onSuccess(Response response) {
@@ -334,6 +343,32 @@ public class GitHubAPI {
         return false;
     }
 
+    /**
+     * парсит заголовок Link и номер следующей страницы
+     * @return номер следующей страницы из заголовка
+     */
+    public int getNextPageFromLastResponse() {
+        if(mLastResponseHeaders!=null) {
+            List<Header> headerList = mLastResponseHeaders.getHeaders();
+            for(Header header : headerList) {
+                if(header.getName()!=null && header.getName().equals(HEADER_LINK)) {
+                    String value = header.getValue();
+                    int pos = value.indexOf("rel=\"next\"");
+                    if(pos>0) {
+                        Pattern pattern = Pattern.compile("\\&page=(\\d)");
+                        Matcher m = pattern.matcher(value.substring(0,pos));
+                        if(m.find()) {
+                            return Integer.parseInt(m.group(1));
+                        }
+                    }
+                }
+            }
+        } else {
+            Log.e(TAG,"Last Response Headers is NULL!");
+        }
+        Log.i(TAG,"Link header not found");
+        return -1;
+    }
 
 
 
