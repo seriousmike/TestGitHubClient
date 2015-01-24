@@ -53,6 +53,7 @@ public class RepositoryFragment extends AlerterInterfaceFragment implements Swip
     private int mPage;
     private boolean mIsUpdating = false;
     private boolean mEndOfTheList = false;
+    private boolean mIsRetained = false;
 
 
     public static RepositoryFragment getInstance(String owner, String repo, HashMap<String,String> repoInfo) {
@@ -64,6 +65,23 @@ public class RepositoryFragment extends AlerterInterfaceFragment implements Swip
         fragment.setArguments(args);
         return fragment;
     }
+
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
+    }
+
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        Log.i(TAG,"on detach");
+        mIsRetained = true;
+    }
+
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parentView, Bundle savedInstanceState) {
@@ -118,7 +136,7 @@ public class RepositoryFragment extends AlerterInterfaceFragment implements Swip
         mListView.setHeaderDividersEnabled(true);
         mListView.addHeaderView(header);
 
-        mCommits = new ArrayList<>();
+        if(mCommits==null) mCommits = new ArrayList<>();
         mAdapter = new CommitsAdapter(getActivity(), mCommits);
         mListView.setAdapter( mAdapter );
         mListView.setClickable(false);
@@ -135,8 +153,7 @@ public class RepositoryFragment extends AlerterInterfaceFragment implements Swip
             }
         });
 
-        loadFirstCommits();
-
+        if(!mIsRetained) loadFirstCommits();
         mListView.setOnScrollListener( new AbsListView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(AbsListView view, int scrollState) {
@@ -145,7 +162,7 @@ public class RepositoryFragment extends AlerterInterfaceFragment implements Swip
 
             @Override
             public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-                if(!mIsUpdating && !mEndOfTheList) {
+                if(!mIsUpdating && !mEndOfTheList && !mIsRetained && mCommits.size()>0) {
                     if( firstVisibleItem+visibleItemCount == totalItemCount && totalItemCount>0) {
                         Log.d(TAG,"ONSCROLL !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
                         Log.d(TAG, "First " + firstVisibleItem + "; visible " + visibleItemCount + "; total " + totalItemCount);
@@ -199,9 +216,6 @@ public class RepositoryFragment extends AlerterInterfaceFragment implements Swip
 
             @Override
             public void onFailure(int error_code) {
-                if(mSwipeRefreshLayout.isRefreshing()) {
-                    mSwipeRefreshLayout.setRefreshing(false);
-                }
                 failureHandler(error_code);
             }
         });

@@ -2,6 +2,7 @@ package ru.seriousmike.testgithubclient.fragments;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
@@ -41,18 +42,44 @@ public class RepositoryListFragment extends AlerterInterfaceFragment implements 
     private View mListStatusView;
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
-    private static final int PER_PAGE = 5;
+    private static final int PER_PAGE = 30;
     private int mPage;
     private boolean mIsUpdating = false;
     private boolean mEndOfTheList = false;
+    private boolean mIsRetained = false;
 
     public RepositoryListFragment() {}
 
     @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
+    }
+
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        Log.i(TAG,"on detach");
+        mIsRetained = true;
+    }
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.i(TAG,"onResume");
+        mIsRetained = false;
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
+
+        Log.i(TAG,"onCreateView ... isDetached "+(isDetached()?" true ":" false "));
+
         View layout = inflater.inflate(R.layout.fragment_repository_list, parent, false);
 
-        mRepos = new ArrayList<>();
+        if(mRepos==null) mRepos = new ArrayList<>();
         mListView = (ListView) layout.findViewById(R.id.listRepositories);
 
         mSwipeRefreshLayout = (SwipeRefreshLayout) layout.findViewById(R.id.swipeRefresher);
@@ -110,7 +137,9 @@ public class RepositoryListFragment extends AlerterInterfaceFragment implements 
             }
         });
 
-        loadFirstRepos();
+        if(!mIsRetained) { // при изменении конфигурации блокируется запуск первого завпроса
+            loadFirstRepos();
+        }
 
         mListView.setOnScrollListener( new AbsListView.OnScrollListener() {
             @Override
@@ -120,7 +149,7 @@ public class RepositoryListFragment extends AlerterInterfaceFragment implements 
 
             @Override
             public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-                if(!mIsUpdating && !mEndOfTheList) {
+                if(!mIsUpdating && !mEndOfTheList && !mIsRetained && mRepos.size()>0) {
                     if( firstVisibleItem+visibleItemCount == totalItemCount && totalItemCount>0) {
                         Log.d(TAG,"ONSCROLL !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
                         Log.d(TAG, "First " + firstVisibleItem + "; visible " + visibleItemCount + "; total " + totalItemCount);
@@ -132,7 +161,6 @@ public class RepositoryListFragment extends AlerterInterfaceFragment implements 
 
         return layout;
     }
-
 
     public void retryRequest() {
         if(mSwipeRefreshLayout.isRefreshing() || mRepos.size()==0) {
@@ -148,12 +176,13 @@ public class RepositoryListFragment extends AlerterInterfaceFragment implements 
         mListStatusView.findViewById(R.id.tvEmptyMessage).setVisibility(View.GONE);
         if(mListView.getFooterViewsCount()==0) {
             mListView.addFooterView(mListStatusView);
+            mListView.setFooterDividersEnabled(false);
         }
 
     }
 
     private void loadFirstRepos() {
-
+        Log.i(TAG,"first request");
         mPage = 1;
         mListStatusView.findViewById(R.id.progressBar).setVisibility(View.VISIBLE);
         mListStatusView.findViewById(R.id.tvEmptyMessage).setVisibility(View.GONE);

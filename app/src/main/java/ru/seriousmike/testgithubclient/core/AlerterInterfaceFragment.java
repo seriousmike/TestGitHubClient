@@ -28,15 +28,13 @@ public abstract class AlerterInterfaceFragment extends Fragment {
     }
 
     protected final void defaultUnauthAction() {
-        //TODO сделать проверку на наличие других активностей в стеке... хм, возможно, это нужно сделать в LoginActivity
         Log.i(TAG, "starting login activity");
         Intent i = new Intent(getActivity(), LoginActivity.class);
-        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
+        i.setFlags( Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK );
         startActivity(i);
     }
 
     protected void processRequestFailure(int error_code) {
-        //TODO исправить багу при изменини ориентации создаются новые диалоги - setRetainInstance?
         ((AlertCaller)getActivity()).showAlertDialog(error_code, true, false, null, null);
     }
 
