@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.nhaarman.listviewanimations.appearance.simple.SwingBottomInAnimationAdapter;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -44,7 +45,7 @@ public class RepositoryFragment extends AlerterInterfaceFragment implements Swip
 
     private LayoutInflater mInflater;
     private ListView mListView;
-    private CommitsAdapter mAdapter;
+    private SwingBottomInAnimationAdapter mAdapter;
     private List<Commit> mCommits;
     private View mListStatusView;
     private SwipeRefreshLayout mSwipeRefreshLayout;
@@ -137,7 +138,8 @@ public class RepositoryFragment extends AlerterInterfaceFragment implements Swip
         mListView.addHeaderView(header);
 
         if(mCommits==null) mCommits = new ArrayList<>();
-        mAdapter = new CommitsAdapter(getActivity(), mCommits);
+        mAdapter = new SwingBottomInAnimationAdapter(new CommitsAdapter(getActivity(), mCommits));
+        mAdapter.setAbsListView(mListView);
         mListView.setAdapter( mAdapter );
         mListView.setClickable(false);
 
