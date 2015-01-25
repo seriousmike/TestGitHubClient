@@ -21,6 +21,7 @@
     <string name="title_activity_authorization_types">Выберите авторизацию</string>
 
     <string name="title_activity_webflow">Получение доступа</string>
+    <string name="no_internet_browser_activity">No internet browser installed?</string>
 
     <!-- АВТОРИЗАЦИЯ -->
     <string name="prompt_login">Login</string>

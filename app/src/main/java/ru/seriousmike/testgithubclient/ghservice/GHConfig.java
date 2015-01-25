@@ -12,4 +12,5 @@ public class GHConfig {
     public static final String[] SCOPES = new String[] {TokenRequest.SCOPE_REPO};
     public static final String OAUTH_WEB_FLOW_URL = "http://github.seriousmike.ru/oauth.php";
     public static final String OAUTH_WEB_FLOW_BASE_URL = "http://github.seriousmike.ru/";
+    public static final String OAUTH_WEB_FLOW_SERVICE_BASE_URL = "https://github.com/login";
 }
