@@ -20,7 +20,7 @@
         <item name="android:textSize">11sp</item>
         <item name="android:textStyle">bold</item>
         <item name="android:textColor">@color/section_text_primary</item>
-        <item name="android:background">@color/deep_purple_500</item>
+        <item name="android:background">@color/color_background_base</item>
     </style>
 
 

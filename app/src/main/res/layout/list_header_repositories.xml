@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:background="@color/deep_purple_500"
+              android:background="@color/color_background_base"
               android:orientation="vertical"
               android:paddingLeft="@dimen/activity_horizontal_margin"
               android:paddingRight="@dimen/activity_horizontal_margin"
@@ -22,7 +22,7 @@
 
         <ImageButton
             android:elevation="8dp"
-            android:background="@color/deep_orange_accent"
+            android:background="@color/color_accent"
             android:padding="4dp"
             android:src="@drawable/ic_launcher"
             android:id="@+id/ibLogout"

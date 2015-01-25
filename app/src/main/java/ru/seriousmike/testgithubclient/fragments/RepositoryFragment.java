@@ -90,7 +90,7 @@ public class RepositoryFragment extends AlerterInterfaceFragment implements Swip
 
         mSwipeRefreshLayout = (SwipeRefreshLayout) layout.findViewById(R.id.swipeRefresher);
         mSwipeRefreshLayout.setOnRefreshListener(this);
-        mSwipeRefreshLayout.setColorSchemeColors(getResources().getColor(R.color.deep_purple_500), getResources().getColor(R.color.deep_orange_accent) );
+        mSwipeRefreshLayout.setColorSchemeColors(getResources().getColor(R.color.color_background_base), getResources().getColor(R.color.color_accent) );
 
         mListView = (ListView)layout.findViewById(R.id.listCommits);
 

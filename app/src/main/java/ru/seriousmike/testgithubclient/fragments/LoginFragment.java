@@ -37,10 +37,10 @@ public class LoginFragment extends AlerterInterfaceFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
-        View layout = inflater.inflate(R.layout.activity_login, parent, false);
+        View layout = inflater.inflate(R.layout.fragment_login, parent, false);
 
         // Set up the login form.
-        mLoginView = (EditText) layout.findViewById(R.id.email);
+        mLoginView = (EditText) layout.findViewById(R.id.login);
 
         mPasswordView = (EditText) layout.findViewById(R.id.password);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
