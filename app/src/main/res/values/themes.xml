@@ -8,7 +8,7 @@
         <item name="android:textColorPrimary">@color/section_text_primary</item>
 
         <item name="actionBarStyle">@style/MyActionBarStyle</item>
-        <item name="android:windowContentOverlay">@null</item>
+        <!--<item name="android:windowContentOverlay">@null</item>-->
     </style>
 
     <style name="MyActionBarStyle" parent="Widget.AppCompat.ActionBar">
