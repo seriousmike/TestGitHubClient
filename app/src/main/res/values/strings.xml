@@ -30,6 +30,7 @@
     <string name="title_activity_login">Авторизация</string>
 
     <!-- СПИСОК РЕПОЗИТОРИЕВ / ГЛАВНЫЙ ЭКРАН -->
+    <string name="title_activity_repository_list">Доступные репозитории</string>
     <string name="greetings">Репозитории пользователя </string>
     <string name="th_repolist_repository">Репзоиторий</string>
     <string name="th_repolist_owner">Владелец</string>
@@ -39,6 +40,7 @@
     <string name="no_repositories">Похоже, доступных репозиториев нет</string>
 
     <!-- СПИСОК КОММИОТОВ РЕПОЗИТОРИЯ -->
+    <string name="title_activity_repository">Коммиты репозитория</string>
     <string name="repo_unavailable">Возможно, такого репозитория не существует или у Вас нет к нему доступа.</string>
     <string name="no_commits">Похоже, ещё не было ни одного коммита</string>
     <string name="repo_created">Создан: </string>
