@@ -213,6 +213,17 @@ public class RepositoryListFragment extends AlerterInterfaceFragment implements 
                 if(!GitHubAPI.getInstance().hasLastResponseNextPage()) {
                     mEndOfTheList = true;
                 }
+
+                if(mRepos.isEmpty()) {
+                    mListStatusView.findViewById(R.id.tvRepeatButton).setVisibility(View.GONE);
+                    mListStatusView.findViewById(R.id.progressBar).setVisibility(View.GONE);
+                    mListStatusView.findViewById(R.id.tvEmptyMessage).setVisibility(View.VISIBLE);
+                    ((TextView)mListStatusView.findViewById(R.id.tvEmptyMessage)).setText(R.string.no_repositories);
+                    if(mListView.getFooterViewsCount()==0) {
+                        mListView.addFooterView(mListStatusView, null, false);
+                        mListView.setFooterDividersEnabled(false);
+                    }
+                }
             }
 
             @Override

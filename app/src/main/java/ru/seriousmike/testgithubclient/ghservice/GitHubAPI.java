@@ -53,6 +53,7 @@ public class GitHubAPI {
 
     public static final int ERR_CODE_UNAUTH = 401;
     public static final int ERR_CODE_FORBIDDEN = 403;
+    public static final int ERR_CODE_NOT_FOUND = 404;
     public static final int ERR_CODE_CONFLICT = 409;
     public static final int ERR_CODE_UNKONWN_ERROR = 666;
     public static final int ERR_CODE_NO_INTERNET = 665;

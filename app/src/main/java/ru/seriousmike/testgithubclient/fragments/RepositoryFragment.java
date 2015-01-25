@@ -255,7 +255,17 @@ public class RepositoryFragment extends AlerterInterfaceFragment implements Swip
             mListStatusView.findViewById(R.id.progressBar).setVisibility(View.GONE);
             mListStatusView.findViewById(R.id.tvEmptyMessage).setVisibility(View.VISIBLE);
             ((TextView)(mListStatusView.findViewById(R.id.tvEmptyMessage))).setText(getString(R.string.no_commits));
-            //TODO проверить на исключение из репозитория после загрузки списка репозиториев, что будет выдавать? 404?
+            cancelRefreshing();
+        } else if(error_code == GitHubAPI.ERR_CODE_NOT_FOUND) {
+            mCommits.clear();
+            mAdapter.notifyDataSetChanged();
+            mListStatusView.findViewById(R.id.progressBar).setVisibility(View.GONE);
+            mListStatusView.findViewById(R.id.tvEmptyMessage).setVisibility(View.VISIBLE);
+            ((TextView)(mListStatusView.findViewById(R.id.tvEmptyMessage))).setText(getString(R.string.repo_unavailable));
+            if(mListView.getFooterViewsCount()==0) {
+                mListView.addFooterView(mListStatusView);
+            }
+            cancelRefreshing();
         } else {
             defaultRequestFailureAction(error_code);
         }
