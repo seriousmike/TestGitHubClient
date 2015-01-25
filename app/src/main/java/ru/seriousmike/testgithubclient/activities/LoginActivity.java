@@ -1,6 +1,8 @@
 package ru.seriousmike.testgithubclient.activities;
 
 import android.app.Fragment;
+
+import ru.seriousmike.testgithubclient.R;
 import ru.seriousmike.testgithubclient.core.SingleFragmentActivity;
 import ru.seriousmike.testgithubclient.fragments.LoginFragment;
 
@@ -25,11 +27,11 @@ public class LoginActivity extends SingleFragmentActivity {
 
     @Override
     public void clickedPositive(int event_code) {
-//TODO реакции на отсутствие инета и тд
+        ((LoginFragment)getFragmentManager().findFragmentById(R.id.fragmentContainer)).attemptLogin();
     }
 
     @Override
     public void clickedNegative(int event_code) {
-
+        ((LoginFragment)getFragmentManager().findFragmentById(R.id.fragmentContainer)).showProgress(false);
     }
 }

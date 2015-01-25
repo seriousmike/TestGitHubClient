@@ -111,7 +111,6 @@ public class LoginFragment extends AlerterInterfaceFragment {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-            //TODO перевести на ingleFragmentActivity и добавить алерты при отсутствии инета
             Log.i(TAG, "Checking " + mLoginView.getText().toString() + ":" + mPasswordView.getText().toString());
             GitHubAPI.getInstance().getAuthorization(mLoginView.getText().toString(), mPasswordView.getText().toString(), new RequestCallback<UserInfo>() {
                 @Override
@@ -131,6 +130,8 @@ public class LoginFragment extends AlerterInterfaceFragment {
                         showProgress(false);
                         mLoginView.setError(getString(R.string.error_msg_401_bad_credentials));
                         mLoginView.requestFocus();
+                    } else {
+                        ((AlertCaller)getActivity()).showAlertDialog(error_code, true, true, null, null);
                     }
                 }
             });
