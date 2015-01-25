@@ -93,14 +93,14 @@ public class RepositoryListFragment extends AlerterInterfaceFragment implements 
         }
         ((TextView)header.findViewById(R.id.tvUserName)).setText(getString(R.string.greetings)+"\n"+userName);
 
-        header.findViewById(R.id.ibLogout).setOnClickListener( new View.OnClickListener() {
+        header.findViewById(R.id.tvLogout).setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ((AlertCaller)getActivity()).showAlertDialog(AlertDialogFragment.EVENT_LOGOUT, true, true, getString(R.string.logout), null);
             }
         } );
 
-        mListView.addHeaderView(header);
+        mListView.addHeaderView(header, null, false);
         mListView.setHeaderDividersEnabled(true);
 
         mAdapter = new SwingBottomInAnimationAdapter(new RepositoryListAdapter(getActivity(), mRepos));
@@ -180,7 +180,7 @@ public class RepositoryListFragment extends AlerterInterfaceFragment implements 
         mListStatusView.findViewById(R.id.progressBar).setVisibility(View.GONE);
         mListStatusView.findViewById(R.id.tvEmptyMessage).setVisibility(View.GONE);
         if(mListView.getFooterViewsCount()==0) {
-            mListView.addFooterView(mListStatusView);
+            mListView.addFooterView(mListStatusView, null, false);
             mListView.setFooterDividersEnabled(false);
         }
 
@@ -192,7 +192,7 @@ public class RepositoryListFragment extends AlerterInterfaceFragment implements 
         mListStatusView.findViewById(R.id.progressBar).setVisibility(View.VISIBLE);
         mListStatusView.findViewById(R.id.tvEmptyMessage).setVisibility(View.GONE);
         if(mListView.getFooterViewsCount()==0) {
-            mListView.addFooterView(mListStatusView);
+            mListView.addFooterView(mListStatusView, null, false);
             mListView.setFooterDividersEnabled(false);
         }
 

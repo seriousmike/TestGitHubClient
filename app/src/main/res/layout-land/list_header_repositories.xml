@@ -27,7 +27,7 @@
             android:background="@color/color_accent"
             android:padding="4dp"
             android:src="@drawable/ic_launcher"
-            android:id="@+id/ibLogout"
+            android:id="@+id/tcLogout"
             android:layout_marginLeft="10dp"
             android:layout_marginBottom="10dp"
             android:layout_width="wrap_content"

@@ -135,7 +135,7 @@ public class RepositoryFragment extends AlerterInterfaceFragment implements Swip
 
 
         mListView.setHeaderDividersEnabled(true);
-        mListView.addHeaderView(header);
+        mListView.addHeaderView(header, null, false);
 
         if(mCommits==null) mCommits = new ArrayList<>();
         mAdapter = new SwingBottomInAnimationAdapter(new CommitsAdapter(getActivity(), mCommits));
@@ -192,7 +192,7 @@ public class RepositoryFragment extends AlerterInterfaceFragment implements Swip
         mListStatusView.findViewById(R.id.progressBar).setVisibility(View.VISIBLE);
         mListStatusView.findViewById(R.id.tvEmptyMessage).setVisibility(View.GONE);
         if(mListView.getFooterViewsCount()==0) {
-            mListView.addFooterView(mListStatusView);
+            mListView.addFooterView(mListStatusView, null, false);
             mListView.setFooterDividersEnabled(false);
         }
 
@@ -277,7 +277,7 @@ public class RepositoryFragment extends AlerterInterfaceFragment implements Swip
         mListStatusView.findViewById(R.id.progressBar).setVisibility(View.GONE);
         mListStatusView.findViewById(R.id.tvEmptyMessage).setVisibility(View.GONE);
         if(mListView.getFooterViewsCount()==0) {
-            mListView.addFooterView(mListStatusView);
+            mListView.addFooterView(mListStatusView, null, false);
         }
     }
 
