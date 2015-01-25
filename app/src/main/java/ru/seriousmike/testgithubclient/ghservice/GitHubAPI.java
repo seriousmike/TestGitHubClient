@@ -315,6 +315,15 @@ public class GitHubAPI {
     }
 
     /**
+     * назначает новый токен
+     * @param token - полученная строка токена
+     */
+    public void setToken(String token) {
+        mToken = token;
+        writeToken();
+    }
+
+    /**
      * логаутит текущего юзера
      */
     public void logout() {

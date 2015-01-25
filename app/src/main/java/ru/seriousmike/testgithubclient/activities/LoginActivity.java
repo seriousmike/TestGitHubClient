@@ -110,7 +110,7 @@ public class LoginActivity extends Activity {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-            //TODO
+            //TODO перевести на ingleFragmentActivity и добавить алерты при отсутствии инета
             Log.i(TAG, "Checking "+ mLoginView.getText().toString()+":"+mPasswordView.getText().toString());
             GitHubAPI.getInstance(getApplicationContext()).getAuthorization(mLoginView.getText().toString(), mPasswordView.getText().toString(), new RequestCallback<UserInfo>() {
                 @Override

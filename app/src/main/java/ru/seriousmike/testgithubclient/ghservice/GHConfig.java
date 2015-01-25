@@ -10,4 +10,6 @@ public class GHConfig {
     public static final String USER_AGENT = "SM-Simple-GitHub-Client-Test";
     public static final String AUTH_NOTE = "Simple GitHub Client Test App";
     public static final String[] SCOPES = new String[] {TokenRequest.SCOPE_REPO};
+    public static final String OAUTH_WEB_FLOW_URL = "http://github.seriousmike.ru/oauth.php";
+    public static final String OAUTH_WEB_FLOW_BASE_URL = "http://github.seriousmike.ru/";
 }

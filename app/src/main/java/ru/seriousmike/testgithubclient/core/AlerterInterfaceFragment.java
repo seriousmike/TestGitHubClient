@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.util.Log;
 
 import ru.seriousmike.testgithubclient.activities.LoginActivity;
+import ru.seriousmike.testgithubclient.activities.OauthWebFlowActivity;
 import ru.seriousmike.testgithubclient.ghservice.GitHubAPI;
 
 /**
@@ -29,7 +30,7 @@ public abstract class AlerterInterfaceFragment extends Fragment {
 
     protected final void defaultUnauthAction() {
         Log.i(TAG, "starting login activity");
-        Intent i = new Intent(getActivity(), LoginActivity.class);
+        Intent i = new Intent(getActivity(), OauthWebFlowActivity.class); //TODO изменить на нормальную активность
         i.setFlags( Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK );
         startActivity(i);
     }
