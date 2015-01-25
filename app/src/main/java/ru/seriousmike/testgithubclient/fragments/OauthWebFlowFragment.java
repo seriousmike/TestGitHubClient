@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import ru.seriousmike.testgithubclient.R;
 import ru.seriousmike.testgithubclient.activities.PreloaderActivity;
+import ru.seriousmike.testgithubclient.activities.RepositoryListActivity;
 import ru.seriousmike.testgithubclient.core.AlerterInterfaceFragment;
 import ru.seriousmike.testgithubclient.ghservice.GHConfig;
 import ru.seriousmike.testgithubclient.ghservice.GitHubAPI;
@@ -35,6 +36,7 @@ public class OauthWebFlowFragment extends AlerterInterfaceFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
         View layout = inflater.inflate(R.layout.fragment_oauth_webflow, parent, false);
         mWebView = (WebView) layout.findViewById(R.id.webView);
+        //TODO добавить хром-штуки, типа индикатора загрузки
         //mWebView.getSettings().setJavaScriptEnabled(true);
         mWebView.setWebViewClient( new WebViewClient() {
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
@@ -44,6 +46,7 @@ public class OauthWebFlowFragment extends AlerterInterfaceFragment {
                     if(!token.equals("")) {
                         GitHubAPI.getInstance().setToken(token);
                         Intent i = new Intent(getActivity(), PreloaderActivity.class);
+                        i.setFlags( Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK );
                         startActivity(i);
                         getActivity().finish();
                     } else {
@@ -54,6 +57,7 @@ public class OauthWebFlowFragment extends AlerterInterfaceFragment {
                 return false;
             }
         } );
+        //TODO бомбануть проверку на отсутствие инета, и вообще бегания по ссылочкам
         mWebView.loadUrl(GHConfig.OAUTH_WEB_FLOW_URL);
         return layout;
     }

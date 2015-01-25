@@ -2,10 +2,8 @@
 <resources>
 
     <string name="app_name">Test GitHub Client</string>
-
     <string name="loading">...ЗАГРУЗКА...</string>
     <string name="pull_to_refresh">Потяните, чтобы обновить</string>
-
     <string name="na">N/A</string>
 
     <!-- AlertDialogFragment -->
@@ -15,9 +13,17 @@
     <string name="logout">Выйти</string>
     <string name="exit">Выход</string>
 
+    <!-- Выбор типа авторизации -->
+    <string name="personal_token_button">Personal token</string>
+    <string name="personal_token_description">Создание персонального токена на основе базовой авторизации. Логин/пароль вводятся в приложении, но не сохраняются, а отправляются на api.github.com для создания токена доступа без подтверждения разрешения на получение доступа к репозиториям</string>
+    <string name="oauth_webflow_description">Правильная Oauth-авторизация через сервис github.com c запросом подтверждения разрешений и доступа приложения к списку репозиториев пользоателя.</string>
+    <string name="oauth_webflow_button">Oauth via WebFlow</string>
+    <string name="title_activity_authorization_types">Выберите авторизацию</string>
+
+    <string name="title_activity_webflow">Получение доступа</string>
 
     <!-- АВТОРИЗАЦИЯ -->
-    <string name="prompt_email">Email</string>
+    <string name="prompt_login">Login</string>
     <string name="prompt_password">Password</string>
     <string name="action_sign_in">Войти</string>
     <string name="error_field_required">Заполните это поле</string>
@@ -46,10 +52,18 @@
 
 
 
+
+
+
+
+    <!-- нечто -->
     <string name="action_settings">Settings</string>
-    <string name="title_activity_test">TestActivity</string>
+
+
     <string name="hello_world">Greetings, </string>
     <string name="title_activity_alert">Внимание</string>
+
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
 
 </resources>

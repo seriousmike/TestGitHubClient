@@ -17,8 +17,18 @@
             android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:screenOrientation="portrait"
+            android:name=".activities.AuthorizationChooseActivity"
+            android:label="@string/title_activity_authorization_types" >
+        </activity>
+        <activity
+            android:name=".activities.OauthWebFlowActivity"
+            android:label="@string/title_activity_webflow" >
         </activity>
         <activity
             android:name=".activities.LoginActivity"
@@ -32,10 +42,6 @@
         <activity
             android:name=".activities.RepositoryActivity"
             android:label="@string/title_activity_login" >
-        </activity>
-        <activity
-            android:name=".activities.OauthWebFlowActivity"
-            android:label="@string/title_activity_test" >
         </activity>
     </application>
 

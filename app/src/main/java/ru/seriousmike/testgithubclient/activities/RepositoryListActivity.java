@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.util.Log;
 
 import ru.seriousmike.testgithubclient.R;
+import ru.seriousmike.testgithubclient.core.AlerterInterfaceFragment;
 import ru.seriousmike.testgithubclient.core.SingleFragmentActivity;
 import ru.seriousmike.testgithubclient.fragments.AlertDialogFragment;
 import ru.seriousmike.testgithubclient.fragments.RepositoryListFragment;
@@ -27,8 +28,8 @@ public class RepositoryListActivity extends SingleFragmentActivity {
         switch(event_code) {
             case AlertDialogFragment.EVENT_LOGOUT:
                 GitHubAPI.getInstance().logout();
-                Intent i = new Intent(RepositoryListActivity.this, LoginActivity.class);
-                i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
+                Intent i = new Intent(this, AuthorizationChooseActivity.class);
+                i.setFlags( Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK );
                 startActivity(i);
                 break;
             default:

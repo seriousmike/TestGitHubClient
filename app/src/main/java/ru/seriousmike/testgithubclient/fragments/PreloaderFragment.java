@@ -31,7 +31,6 @@ public class PreloaderFragment extends AlerterInterfaceFragment {
                              Bundle savedInstanceState) {
 
         View layout = inflater.inflate(R.layout.fragment_preloader, container, false);
-
         checkAuthorization();
 
         return layout;
@@ -49,6 +48,7 @@ public class PreloaderFragment extends AlerterInterfaceFragment {
 
             @Override
             public void onFailure(int error_code) {
+                Log.i(TAG,"error_code "+error_code);
                 defaultRequestFailureAction(error_code);
             }
         });
