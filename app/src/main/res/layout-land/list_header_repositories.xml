@@ -2,13 +2,13 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:orientation="vertical"
               android:background="@color/color_background_base"
-              android:paddingLeft="@dimen/activity_horizontal_margin"
-              android:paddingRight="@dimen/activity_horizontal_margin"
               android:layout_width="match_parent"
               android:layout_height="wrap_content">
 
 
     <LinearLayout
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -27,7 +27,8 @@
             android:padding="4dp"
             android:src="@drawable/ic_launcher"
             android:id="@+id/ibLogout"
-            android:layout_margin="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginBottom="10dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
     </LinearLayout>
@@ -35,6 +36,8 @@
 
     <LinearLayout
         android:orientation="horizontal"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -61,12 +64,14 @@
             />
 
         <TextView
+            android:gravity="right"
             android:textColor="@color/section_text_secondary"
             android:text="@string/th_repolist_frks"
             android:layout_width="@dimen/repo_list_forks"
             android:layout_height="wrap_content"
             />
         <TextView
+            android:gravity="right"
             android:textColor="@color/section_text_secondary"
             android:text="@string/th_repolist_wtchr"
             android:layout_width="@dimen/repo_list_watchers"

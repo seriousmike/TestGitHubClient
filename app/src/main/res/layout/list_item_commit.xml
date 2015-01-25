@@ -8,7 +8,7 @@
     <TextView
         android:id="@+id/tvCommitHash"
         style="@style/CommitsListTableAlike"
-        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingLeft="@dimen/activity_horizontal_margin_smallen"
         android:layout_width="@dimen/commit_list_hash" />
     <TextView
         android:id="@+id/tvCommitMsg"
@@ -25,7 +25,7 @@
         android:id="@+id/tvCommitDate"
         style="@style/CommitsListTableAlike"
         android:minLines="2"
-        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin_smallen"
         android:layout_height="fill_parent"
         android:layout_width="@dimen/commit_list_date"/>
 

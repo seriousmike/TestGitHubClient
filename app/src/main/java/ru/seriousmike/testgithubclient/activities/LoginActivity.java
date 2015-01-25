@@ -19,6 +19,11 @@ public class LoginActivity extends SingleFragmentActivity {
     }
 
     @Override
+    protected void initActionBar() {
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    }
+
+    @Override
     public void clickedPositive(int event_code) {
 //TODO реакции на отсутствие инета и тд
     }

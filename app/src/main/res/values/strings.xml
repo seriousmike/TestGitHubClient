@@ -31,7 +31,7 @@
 
     <!-- СПИСОК РЕПОЗИТОРИЕВ / ГЛАВНЫЙ ЭКРАН -->
     <string name="title_activity_repository_list">Доступные репозитории</string>
-    <string name="greetings">Репозитории пользователя </string>
+    <string name="greetings">Вы авторизованы как </string>
     <string name="th_repolist_repository">Репзоиторий</string>
     <string name="th_repolist_owner">Владелец</string>
     <string name="th_repolist_frks_wtchr">frks\nwtchr</string>

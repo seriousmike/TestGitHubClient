@@ -38,6 +38,11 @@ public class RepositoryActivity extends SingleFragmentActivity {
     }
 
     @Override
+    protected void initActionBar() {
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    }
+
+    @Override
     public void clickedPositive(int event_code) {
         try {
             ((RepositoryFragment) getFragmentManager().findFragmentById(R.id.fragmentContainer)).retryRequest();

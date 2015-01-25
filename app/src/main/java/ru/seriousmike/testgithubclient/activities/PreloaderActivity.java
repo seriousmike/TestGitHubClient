@@ -20,6 +20,11 @@ public class PreloaderActivity extends SingleFragmentActivity {
     }
 
     @Override
+    protected void initActionBar() {
+        getSupportActionBar().hide();
+    }
+
+    @Override
     public void clickedPositive(int event_code) {
         Log.i(TAG,"clicked repeat");
         ((PreloaderFragment)(getFragmentManager().findFragmentById(R.id.fragmentContainer))).checkAuthorization();

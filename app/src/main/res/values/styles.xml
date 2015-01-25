@@ -1,9 +1,9 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <!--<style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">-->
         <!-- Customize your theme here. -->
-    </style>
+    <!--</style>-->
 
 
     <style name="CommitsListTableAlike">
@@ -33,5 +33,6 @@
         <item name="android:textColor">#ffffff</item>
         <item name="android:textStyle">bold</item>
     </style>
+
 </resources>
 

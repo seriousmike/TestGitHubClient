@@ -24,6 +24,10 @@ public class RepositoryListActivity extends SingleFragmentActivity {
     }
 
     @Override
+    protected void initActionBar() {
+    }
+
+    @Override
     public void clickedPositive(int event_code) {
         switch(event_code) {
             case AlertDialogFragment.EVENT_LOGOUT:

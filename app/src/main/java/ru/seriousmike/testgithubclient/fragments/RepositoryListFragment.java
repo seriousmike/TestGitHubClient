@@ -86,7 +86,11 @@ public class RepositoryListFragment extends AlerterInterfaceFragment implements 
         mSwipeRefreshLayout.setColorSchemeColors(getResources().getColor(R.color.color_background_base), getResources().getColor(R.color.color_accent) );
 
         View header = inflater.inflate(R.layout.list_header_repositories, mListView, false);
-        ((TextView)header.findViewById(R.id.tvUserName)).setText(getString(R.string.greetings)+"\n"+GitHubAPI.getInstance(getActivity().getApplicationContext()).getCurrentUser().name);
+        String userName = GitHubAPI.getInstance().getCurrentUser().login;
+        if(GitHubAPI.getInstance().getCurrentUser().name!=null && !GitHubAPI.getInstance().getCurrentUser().name.equals("")) {
+            userName = GitHubAPI.getInstance().getCurrentUser().name + " ("+userName+")";
+        }
+        ((TextView)header.findViewById(R.id.tvUserName)).setText(getString(R.string.greetings)+"\n"+userName);
 
         header.findViewById(R.id.ibLogout).setOnClickListener( new View.OnClickListener() {
             @Override

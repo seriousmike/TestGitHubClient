@@ -2,7 +2,9 @@ package ru.seriousmike.testgithubclient.activities;
 
 import android.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.view.MenuItemCompat;
 import android.util.Log;
+import android.view.MenuItem;
 import android.widget.TextView;
 
 
@@ -18,6 +20,11 @@ public class OauthWebFlowActivity extends SingleFragmentActivity {
     @Override
     protected Fragment createFragment() {
         return new OauthWebFlowFragment();
+    }
+
+    @Override
+    protected void initActionBar() {
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     @Override

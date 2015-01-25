@@ -5,6 +5,8 @@ import android.app.DialogFragment;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
+import android.view.MenuItem;
 
 import ru.seriousmike.testgithubclient.R;
 import ru.seriousmike.testgithubclient.fragments.AlertDialogFragment;
@@ -12,13 +14,14 @@ import ru.seriousmike.testgithubclient.fragments.AlertDialogFragment;
 /**
  * Created by SeriousM on 04.01.2015.
  */
-public abstract class SingleFragmentActivity extends Activity implements AlerterInterfaceFragment.AlertCaller, AlertDialogFragment.DialogInteraction {
+public abstract class SingleFragmentActivity extends ActionBarActivity implements AlerterInterfaceFragment.AlertCaller, AlertDialogFragment.DialogInteraction {
     protected abstract Fragment createFragment();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_single_fragment);
+        initActionBar();
 
         FragmentManager fm = getFragmentManager();
         Fragment fragment = fm.findFragmentById(R.id.fragmentContainer);
@@ -29,9 +32,24 @@ public abstract class SingleFragmentActivity extends Activity implements Alerter
     }
 
     @Override
+    public boolean onOptionsItemSelected (MenuItem item) {
+        switch(item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
     public void showAlertDialog(int error_code, boolean enablePositiveButton, boolean enableNegativeButton, String customPositiveButtonTitle, String customNegativeButtonTitle) {
         DialogFragment alertFragment = AlertDialogFragment.newInstance(error_code, enablePositiveButton, customPositiveButtonTitle, enableNegativeButton, customNegativeButtonTitle);
         alertFragment.show(getFragmentManager(),"dialog");
     }
 
+    /**
+     * настраивает ActionBar
+     */
+    protected abstract void initActionBar();
 }

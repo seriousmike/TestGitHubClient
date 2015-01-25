@@ -3,11 +3,12 @@ package ru.seriousmike.testgithubclient.activities;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.view.View;
 
 import ru.seriousmike.testgithubclient.R;
 
-public class AuthorizationChooseActivity extends Activity {
+public class AuthorizationChooseActivity extends ActionBarActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
