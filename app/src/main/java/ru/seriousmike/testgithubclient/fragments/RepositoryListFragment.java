@@ -15,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.nhaarman.listviewanimations.appearance.simple.SwingBottomInAnimationAdapter;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -37,7 +38,7 @@ public class RepositoryListFragment extends AlerterInterfaceFragment implements 
 
     private ListView mListView;
     private ArrayList<Repository> mRepos;
-    private RepositoryListAdapter mAdapter;
+    private SwingBottomInAnimationAdapter mAdapter;
     private View mListStatusView;
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
@@ -102,8 +103,8 @@ public class RepositoryListFragment extends AlerterInterfaceFragment implements 
         mListView.addHeaderView(header);
         mListView.setHeaderDividersEnabled(true);
 
-        mAdapter = new RepositoryListAdapter(getActivity(), mRepos);
-
+        mAdapter = new SwingBottomInAnimationAdapter(new RepositoryListAdapter(getActivity(), mRepos));
+        mAdapter.setAbsListView(mListView);
         mListView.setAdapter( mAdapter );
         mListView.setOnItemClickListener(new ListView.OnItemClickListener() {
             @Override
@@ -114,15 +115,16 @@ public class RepositoryListFragment extends AlerterInterfaceFragment implements 
 
                 Intent i = new Intent(getActivity(), RepositoryActivity.class);
 
-                Log.i(TAG, position+" "+mAdapter.getItem(position).toString());
+                Repository repo = (Repository)  mAdapter.getItem(position);
 
-                i.putExtra(RepositoryActivity.EXTRA_REPO, mAdapter.getItem(position).name);
-                i.putExtra(RepositoryActivity.EXTRA_OWNER, mAdapter.getItem(position).owner.login );
+                Log.i(TAG, position+" "+mAdapter.getItem(position).toString());
+                i.putExtra(RepositoryActivity.EXTRA_REPO, repo.name);
+                i.putExtra(RepositoryActivity.EXTRA_OWNER, repo.owner.login );
                 // т.к. данные о репозитории не кэшируются, а повторный запрос делать не стоит, отправляем нужные данные репозитория в интенте
-                i.putExtra(RepositoryActivity.EXTRA_RI_ONWER_PIC, mAdapter.getItem(position).owner.avatar_url);
-                i.putExtra(RepositoryActivity.EXTRA_RI_DESCR, mAdapter.getItem(position).description);
-                i.putExtra(RepositoryActivity.EXTRA_RI_CREATED, Helper.formatDate( mAdapter.getItem(position).created_at, Helper.FORMAT_DATETIME_SL));
-                i.putExtra(RepositoryActivity.EXTRA_RI_PUSHED, Helper.formatDate( mAdapter.getItem(position).pushed_at, Helper.FORMAT_DATETIME_SL));
+                i.putExtra(RepositoryActivity.EXTRA_RI_ONWER_PIC, repo.owner.avatar_url);
+                i.putExtra(RepositoryActivity.EXTRA_RI_DESCR, repo.description);
+                i.putExtra(RepositoryActivity.EXTRA_RI_CREATED, Helper.formatDate( repo.created_at, Helper.FORMAT_DATETIME_SL));
+                i.putExtra(RepositoryActivity.EXTRA_RI_PUSHED, Helper.formatDate(repo.pushed_at, Helper.FORMAT_DATETIME_SL));
 
                 startActivity(i);
             }
