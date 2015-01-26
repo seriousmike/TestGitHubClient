@@ -22,16 +22,13 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"/>
 
-        <ImageButton
-            android:elevation="8dp"
-            android:background="@color/color_accent"
-            android:padding="4dp"
-            android:src="@drawable/ic_launcher"
-            android:id="@+id/tcLogout"
+        <TextView
+            android:id="@+id/tvLogout"
+            android:text="@string/exit"
             android:layout_marginLeft="10dp"
-            android:layout_marginBottom="10dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_gravity="center_vertical"
+            style="@style/RaisedTextButton.Small"
+            />
     </LinearLayout>
 
 
@@ -39,6 +36,7 @@
         android:orientation="horizontal"
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin"
+        android:layout_marginTop="5dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
