@@ -155,7 +155,8 @@ public class RepositoryFragment extends AlerterInterfaceFragment implements Swip
             }
         });
 
-        if(!mIsRetained) loadFirstCommits();
+        // предотвращает перезагрузку коммитов при изменении конфигурации, если список коммитов не был пуст
+        if(!mIsRetained || mCommits.size()==0) loadFirstCommits();
         mListView.setOnScrollListener( new AbsListView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(AbsListView view, int scrollState) {

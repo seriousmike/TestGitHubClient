@@ -142,7 +142,8 @@ public class RepositoryListFragment extends AlerterInterfaceFragment implements 
             }
         });
 
-        if(!mIsRetained) { // при изменении конфигурации блокируется запуск первого завпроса
+        // при изменении конфигурации, если список репозиториев не пуст, блокируется перезагрузка списка
+        if(!mIsRetained || mRepos.size()==0) {
             loadFirstRepos();
         }
 
