@@ -127,6 +127,7 @@ public class RepositoryListFragment extends AlerterInterfaceFragment implements 
                 i.putExtra(RepositoryActivity.EXTRA_RI_PUSHED, Helper.formatDate(repo.pushed_at, Helper.FORMAT_DATETIME_SL));
 
                 startActivity(i);
+                getActivity().overridePendingTransition(R.anim.activity_from_right_bottom_in, R.anim.activity_step_out);
             }
         });
 

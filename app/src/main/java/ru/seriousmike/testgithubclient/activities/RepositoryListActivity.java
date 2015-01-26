@@ -35,6 +35,7 @@ public class RepositoryListActivity extends SingleFragmentActivity {
                 Intent i = new Intent(this, AuthorizationChooseActivity.class);
                 i.setFlags( Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK );
                 startActivity(i);
+                overridePendingTransition(R.anim.activity_from_left_complex_motion_in, R.anim.activity_to_right_complex_motion_out);
                 break;
             default:
                 try {

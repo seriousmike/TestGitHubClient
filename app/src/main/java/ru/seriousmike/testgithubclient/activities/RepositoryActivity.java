@@ -2,6 +2,7 @@ package ru.seriousmike.testgithubclient.activities;
 
 import android.app.Fragment;
 import android.util.Log;
+import android.view.MenuItem;
 
 import java.util.HashMap;
 
@@ -36,6 +37,27 @@ public class RepositoryActivity extends SingleFragmentActivity {
 
         return RepositoryFragment.getInstance( getIntent().getStringExtra(EXTRA_OWNER),getIntent().getStringExtra(EXTRA_REPO), repoInfo );
     }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()) {
+            case(android.R.id.home):
+                Log.i(TAG, "home pressed");
+                finish();
+                overridePendingTransition(R.anim.activity_step_in, R.anim.activity_to_right_bottom_out);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        finish();
+        overridePendingTransition(R.anim.activity_step_in, R.anim.activity_to_right_bottom_out);
+    }
+
 
     @Override
     protected void initActionBar() {

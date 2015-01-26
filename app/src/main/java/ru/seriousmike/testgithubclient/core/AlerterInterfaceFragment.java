@@ -4,6 +4,7 @@ import android.app.Fragment;
 import android.content.Intent;
 import android.util.Log;
 
+import ru.seriousmike.testgithubclient.R;
 import ru.seriousmike.testgithubclient.activities.AuthorizationChooseActivity;
 import ru.seriousmike.testgithubclient.activities.LoginActivity;
 import ru.seriousmike.testgithubclient.activities.OauthWebFlowActivity;
@@ -34,6 +35,7 @@ public abstract class AlerterInterfaceFragment extends Fragment {
         Intent i = new Intent(getActivity(), AuthorizationChooseActivity.class);
         i.setFlags( Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK );
         startActivity(i);
+        getActivity().overridePendingTransition(R.anim.activity_from_left_complex_motion_in, R.anim.activity_to_right_complex_motion_out);
     }
 
     protected void processRequestFailure(int error_code) {

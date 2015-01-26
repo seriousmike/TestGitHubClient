@@ -1,15 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <set xmlns:android="http://schemas.android.com/apk/res/android" android:interpolator="@android:anim/accelerate_decelerate_interpolator">
     <scale android:pivotX="50%" android:pivotY="50%"
-           android:fromXScale="0.5" android:toXScale="1.0"
-           android:fromYScale="0.5" android:toYScale="1.0"
+           android:fromXScale="0.45" android:toXScale="1.0"
+           android:fromYScale="0.45" android:toYScale="1.0"
+           android:fillBefore="true"
+           android:startOffset="400"
            android:duration="@android:integer/config_mediumAnimTime" />
 
     <alpha android:fromAlpha="0.5" android:toAlpha="1.0"
+           android:fillBefore="true"
+           android:startOffset="400"
            android:duration="@android:integer/config_mediumAnimTime" />
 
-    <translate android:fromXDelta="100%p" android:toXDelta="0%p"
+    <translate android:fromXDelta="-100%p" android:toXDelta="0%p"
                android:duration="300"
-                 />
+               android:startOffset="200"
+        />
+    <rotate android:pivotX="0%" android:pivotY="100%"
+            android:fillBefore="true"
+            android:fromDegrees="-20" android:toDegrees="0"
+            android:duration="400"
+            android:startOffset="300" />
 
 </set>
