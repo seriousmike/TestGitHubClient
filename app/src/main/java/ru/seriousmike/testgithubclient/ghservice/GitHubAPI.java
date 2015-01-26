@@ -325,6 +325,14 @@ public class GitHubAPI {
     }
 
     /**
+     * проверяет, есть ли сохранённый токен
+     */
+    public boolean isTokenSet() {
+        return (mToken!=null && !mToken.equals(""));
+    }
+
+
+    /**
      * логаутит текущего юзера
      */
     public void logout() {

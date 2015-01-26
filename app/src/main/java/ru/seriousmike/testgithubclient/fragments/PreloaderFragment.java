@@ -3,10 +3,12 @@ package ru.seriousmike.testgithubclient.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
 
 import ru.seriousmike.testgithubclient.R;
 import ru.seriousmike.testgithubclient.activities.RepositoryListActivity;
@@ -36,22 +38,40 @@ public class PreloaderFragment extends AlerterInterfaceFragment {
     }
 
     public void checkAuthorization() {
-        GitHubAPI.getInstance(getActivity().getApplicationContext()).getBasicUserInfo(new RequestCallback<UserInfo>() {
-            @Override
-            public void onSuccess(UserInfo userInfo) {
-                Log.i(TAG, "Success! " + userInfo.toString());
-                Intent i = new Intent(getActivity(), RepositoryListActivity.class);
-                startActivity(i);
-                getActivity().overridePendingTransition(R.anim.activity_fade_in, R.anim.activity_fade_out);
-                getActivity().finish();
-            }
+        if(GitHubAPI.getInstance(getActivity().getApplicationContext()).isTokenSet()) {
+            GitHubAPI.getInstance().getBasicUserInfo(new RequestCallback<UserInfo>() {
+                @Override
+                public void onSuccess(UserInfo userInfo) {
+                    proceedAuthorized();
+                }
 
-            @Override
-            public void onFailure(int error_code) {
-                Log.i(TAG,"error_code "+error_code);
-                defaultRequestFailureAction(error_code);
-                getActivity().overridePendingTransition(R.anim.activity_fade_in, R.anim.activity_fade_out);
-            }
-        });
+                @Override
+                public void onFailure(int error_code) {
+                    Log.i(TAG, "error_code " + error_code);
+                    proceedToAuthorization();
+                }
+            });
+        } else {
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    proceedToAuthorization();
+                }
+            }, 500);
+
+        }
+
+    }
+
+    private void proceedAuthorized() {
+        Intent i = new Intent(getActivity(), RepositoryListActivity.class);
+        startActivity(i);
+        getActivity().overridePendingTransition(R.anim.activity_fade_in, R.anim.activity_fade_out);
+        getActivity().finish();
+    }
+
+    private void proceedToAuthorization() {
+        defaultRequestFailureAction(GitHubAPI.ERR_CODE_UNAUTH);
+        getActivity().overridePendingTransition(R.anim.activity_fade_in, R.anim.activity_fade_out);
     }
 }
