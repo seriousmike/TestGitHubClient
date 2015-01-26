@@ -23,17 +23,33 @@ public class OauthWebFlowActivity extends SingleFragmentActivity {
     }
 
     @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()) {
+            case(android.R.id.home):
+                Log.i(TAG, "home pressed");
+                finish();
+                overridePendingTransition(R.anim.activity_step_in, R.anim.activity_to_top_right_out);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        finish();
+        overridePendingTransition(R.anim.activity_step_in, R.anim.activity_to_top_right_out);
+    }
+
+
+    @Override
     protected void initActionBar() {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     @Override
-    public void clickedPositive(int event_code) {
-
-    }
+    public void clickedPositive(int event_code) {}
 
     @Override
-    public void clickedNegative(int event_code) {
-
-    }
+    public void clickedNegative(int event_code) {}
 }

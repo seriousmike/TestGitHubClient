@@ -1,6 +1,5 @@
 package ru.seriousmike.testgithubclient.activities;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -20,6 +19,7 @@ public class AuthorizationChooseActivity extends ActionBarActivity {
             public void onClick(View v) {
                 Intent i = new Intent(AuthorizationChooseActivity.this, LoginActivity.class);
                 startActivity(i);
+                overridePendingTransition(R.anim.activity_from_bottom_right_in, R.anim.activity_step_out);
             }
         } );
 
@@ -29,6 +29,7 @@ public class AuthorizationChooseActivity extends ActionBarActivity {
             public void onClick(View v) {
                 Intent i = new Intent(AuthorizationChooseActivity.this, OauthWebFlowActivity.class);
                 startActivity(i);
+                overridePendingTransition(R.anim.activity_from_top_right_in, R.anim.activity_step_out);
             }
         } );
     }

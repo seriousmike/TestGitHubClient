@@ -1,6 +1,8 @@
 package ru.seriousmike.testgithubclient.activities;
 
 import android.app.Fragment;
+import android.util.Log;
+import android.view.MenuItem;
 
 import ru.seriousmike.testgithubclient.R;
 import ru.seriousmike.testgithubclient.core.SingleFragmentActivity;
@@ -23,6 +25,25 @@ public class LoginActivity extends SingleFragmentActivity {
     @Override
     protected void initActionBar() {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()) {
+            case(android.R.id.home):
+                Log.i(TAG, "home pressed");
+                finish();
+                overridePendingTransition(R.anim.activity_step_in, R.anim.activity_to_bottom_right_out);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        finish();
+        overridePendingTransition(R.anim.activity_step_in, R.anim.activity_to_bottom_right_out);
     }
 
     @Override
