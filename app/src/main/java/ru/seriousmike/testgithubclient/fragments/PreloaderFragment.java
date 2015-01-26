@@ -27,8 +27,7 @@ public class PreloaderFragment extends AlerterInterfaceFragment {
     public PreloaderFragment() {}
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View layout = inflater.inflate(R.layout.fragment_preloader, container, false);
         checkAuthorization();
@@ -43,6 +42,7 @@ public class PreloaderFragment extends AlerterInterfaceFragment {
                 Log.i(TAG, "Success! " + userInfo.toString());
                 Intent i = new Intent(getActivity(), RepositoryListActivity.class);
                 startActivity(i);
+                getActivity().overridePendingTransition(R.anim.activity_fade_in, R.anim.activity_fade_out);
                 getActivity().finish();
             }
 
@@ -50,6 +50,7 @@ public class PreloaderFragment extends AlerterInterfaceFragment {
             public void onFailure(int error_code) {
                 Log.i(TAG,"error_code "+error_code);
                 defaultRequestFailureAction(error_code);
+                getActivity().overridePendingTransition(R.anim.activity_fade_in, R.anim.activity_fade_out);
             }
         });
     }
