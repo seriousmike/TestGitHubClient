@@ -5,7 +5,8 @@
     <color name="deep_purple_500">#673ab7</color>
     <color name="deep_purple_700">#512da8</color>
 
-    <color name="deep_orange">#ff5722</color>
+    <color name="deep_orange_500">#ff5722</color>
+    <color name="deep_orange_700">#e64a19</color>
 
     <color name="section_text_primary">#eeffffff</color>
     <color name="section_text_secondary">#ccffffff</color>
@@ -13,7 +14,8 @@
     <color name="color_background_light">@color/deep_purple_50</color>
     <color name="color_background_base">@color/deep_purple_500</color>
     <color name="color_background_dark">@color/deep_purple_700</color>
-    <color name="color_accent">@color/deep_orange</color>
+    <color name="color_accent">@color/deep_orange_500</color>
+    <color name="color_accent_dark">@color/deep_orange_700</color>
 
 
 </resources>

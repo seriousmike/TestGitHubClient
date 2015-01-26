@@ -1,16 +1,17 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item>
         <shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
-            <corners android:radius="5dp" />
-            <solid android:color="#15000000" />
+            <stroke android:color="#00000000" android:width="2dp" />
+            <corners android:radius="4dp" />
+            <solid android:color="#66000000"/>
         </shape>
 
     </item>
     <item>
-        <inset android:drawable="@drawable/raised_button_shape"
-               android:insetBottom="1dp"
-               android:insetLeft="1dp"
-               android:insetRight="1dp"
+        <inset android:drawable="@drawable/raised_button_shape_pressed"
+               android:insetBottom="2dp"
+               android:insetLeft="2dp"
+               android:insetRight="2dp"
                android:insetTop="1dp"
             />
     </item>
