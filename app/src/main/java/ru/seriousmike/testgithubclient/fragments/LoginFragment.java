@@ -121,6 +121,7 @@ public class LoginFragment extends AlerterInterfaceFragment {
                     Intent i = new Intent(getActivity(), RepositoryListActivity.class);
                     i.setFlags( Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK );
                     startActivity(i);
+                    getActivity().overridePendingTransition(R.anim.activity_from_right_complex_motion_in, R.anim.activity_to_left_complex_motion_out);
                     getActivity().finish();
                 }
 

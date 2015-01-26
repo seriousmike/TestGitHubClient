@@ -70,6 +70,7 @@ public class OauthWebFlowFragment extends AlerterInterfaceFragment {
                             cookieManager.removeAllCookie();
                         }
                         startActivity(i);
+                        getActivity().overridePendingTransition(R.anim.activity_fade_in, R.anim.activity_fade_out);
                         getActivity().finish();
                     } else {
                         Toast.makeText(getActivity(), R.string.error_msg_unforseen, Toast.LENGTH_SHORT).show();
