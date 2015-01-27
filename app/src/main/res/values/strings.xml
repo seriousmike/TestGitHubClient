@@ -55,18 +55,8 @@
 
 
 
-
-
-
-
     <!-- нечто -->
-    <string name="action_settings">Settings</string>
-
-
-    <string name="hello_world">Greetings, </string>
-    <string name="title_activity_alert">Внимание</string>
-
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="empty_list_pull_to_refresh">Список пуст.\nПотяните, чтобы обновить.</string>
 
 
 </resources>

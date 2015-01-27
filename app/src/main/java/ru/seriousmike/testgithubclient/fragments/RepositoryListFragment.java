@@ -23,7 +23,7 @@ import java.util.List;
 
 import ru.seriousmike.testgithubclient.R;
 import ru.seriousmike.testgithubclient.activities.RepositoryActivity;
-import ru.seriousmike.testgithubclient.core.AlerterInterfaceFragment;
+import ru.seriousmike.testgithubclient.core.AbstractListFragment;
 import ru.seriousmike.testgithubclient.ghservice.GitHubAPI;
 import ru.seriousmike.testgithubclient.ghservice.data.Repository;
 import ru.seriousmike.testgithubclient.ghservice.data.RequestCallback;
@@ -32,45 +32,44 @@ import ru.seriousmike.testgithubclient.helpers.Helper;
 /**
  * Created by SeriousM on 14.01.2015.
  */
-public class RepositoryListFragment extends AlerterInterfaceFragment implements SwipeRefreshLayout.OnRefreshListener {
+public class RepositoryListFragment extends AbstractListFragment {
 
     private static final String TAG = "sm_RepositoryListFragment";
 
-    private ListView mListView;
     private ArrayList<Repository> mRepos;
     private SwingBottomInAnimationAdapter mAdapter;
-    private View mListStatusView;
-    private SwipeRefreshLayout mSwipeRefreshLayout;
+    private ListView mListView;
 
-    private static final int PER_PAGE = 30;
+
+    private static final int PER_PAGE = 3;
     private int mPage;
     private boolean mIsUpdating = false;
     private boolean mEndOfTheList = false;
     private boolean mIsRetained = false;
 
+
     public RepositoryListFragment() {}
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setRetainInstance(true);
+    protected void setFlagFragmentRetained(boolean isRetained) {
+        mIsRetained = isRetained;
     }
-
 
     @Override
-    public void onDetach() {
-        super.onDetach();
-        Log.i(TAG,"on detach");
-        mIsRetained = true;
+    protected void setIsFragmentDataUpdating(boolean isUpdating) {
+        mIsUpdating = isUpdating;
     }
-
 
     @Override
-    public void onResume() {
-        super.onResume();
-        Log.i(TAG,"onResume");
-        mIsRetained = false;
+    protected ArrayList getDataItems() {
+        return mRepos;
     }
+
+    @Override
+    protected ListView getListView() {
+        return mListView;
+    }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
@@ -82,9 +81,7 @@ public class RepositoryListFragment extends AlerterInterfaceFragment implements 
         if(mRepos==null) mRepos = new ArrayList<>();
         mListView = (ListView) layout.findViewById(R.id.listRepositories);
 
-        mSwipeRefreshLayout = (SwipeRefreshLayout) layout.findViewById(R.id.swipeRefresher);
-        mSwipeRefreshLayout.setOnRefreshListener(this);
-        mSwipeRefreshLayout.setColorSchemeColors(getResources().getColor(R.color.color_background_base), getResources().getColor(R.color.color_accent) );
+        initSwipeRefreshLayout( (SwipeRefreshLayout) layout.findViewById(R.id.swipeRefresher) );
 
         View header = inflater.inflate(R.layout.list_header_repositories, mListView, false);
         String userName = GitHubAPI.getInstance().getCurrentUser().login;
@@ -131,21 +128,12 @@ public class RepositoryListFragment extends AlerterInterfaceFragment implements 
             }
         });
 
-        // отдельная вьюха, которая будет выполнять роль футера для индикации загрузки или сообщения о пустом списке
-        // решено не использовать setEmptyView, чтобы сохранить видимым HeaderView списка и не назначать его повторно в EmptyView
-        mListStatusView = inflater.inflate(R.layout.list_message_view, mListView, false);
-        mListStatusView.findViewById(R.id.tvRepeatButton).setOnClickListener( new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mListStatusView.findViewById(R.id.progressBar).setVisibility(View.VISIBLE);
-                mListStatusView.findViewById(R.id.tvRepeatButton).setVisibility(View.GONE);
-                retryRequest();
-            }
-        });
 
-        // при изменении конфигурации, если список репозиториев не пуст, блокируется перезагрузка списка
-        if(!mIsRetained || mRepos.size()==0) {
-            loadFirstRepos();
+        initListFooterView(inflater);
+
+        // при изменении конфигурации блокируется перезагрузка списка
+        if(!mIsRetained) {
+            loadFirstItems();
         }
 
         mListView.setOnScrollListener( new AbsListView.OnScrollListener() {
@@ -160,7 +148,7 @@ public class RepositoryListFragment extends AlerterInterfaceFragment implements 
                     if( firstVisibleItem+visibleItemCount == totalItemCount && totalItemCount>0) {
                         Log.d(TAG,"ONSCROLL !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
                         Log.d(TAG, "First " + firstVisibleItem + "; visible " + visibleItemCount + "; total " + totalItemCount);
-                        loadMoreRepos();
+                        loadMoreItems();
                     }
                 }
             }
@@ -169,34 +157,12 @@ public class RepositoryListFragment extends AlerterInterfaceFragment implements 
         return layout;
     }
 
-    public void retryRequest() {
-        if(mSwipeRefreshLayout.isRefreshing() || mRepos.size()==0) {
-            loadFirstRepos();
-        } else {
-            loadMoreRepos();
-        }
-    }
 
-    public void showRefreshFooter() {
-        mListStatusView.findViewById(R.id.tvRepeatButton).setVisibility(View.VISIBLE);
-        mListStatusView.findViewById(R.id.progressBar).setVisibility(View.GONE);
-        mListStatusView.findViewById(R.id.tvEmptyMessage).setVisibility(View.GONE);
-        if(mListView.getFooterViewsCount()==0) {
-            mListView.addFooterView(mListStatusView, null, false);
-            mListView.setFooterDividersEnabled(false);
-        }
-
-    }
-
-    private void loadFirstRepos() {
+    @Override
+    protected void loadFirstItems() {
         Log.i(TAG,"first request");
         mPage = 1;
-        mListStatusView.findViewById(R.id.progressBar).setVisibility(View.VISIBLE);
-        mListStatusView.findViewById(R.id.tvEmptyMessage).setVisibility(View.GONE);
-        if(mListView.getFooterViewsCount()==0) {
-            mListView.addFooterView(mListStatusView, null, false);
-            mListView.setFooterDividersEnabled(false);
-        }
+        showFooterLoading();
 
         mEndOfTheList = false;
         mPage = 1;
@@ -205,47 +171,40 @@ public class RepositoryListFragment extends AlerterInterfaceFragment implements 
         GitHubAPI.getInstance().getRepositoriesList( PER_PAGE, mPage,  new RequestCallback<List<Repository>>() {
             @Override
             public void onSuccess(List<Repository> repositoryList) {
-                mListView.removeFooterView(mListStatusView);
+                detachFooterFromList();
                 mRepos.clear();
                 mRepos.addAll(repositoryList);
                 mAdapter.notifyDataSetChanged();
-
-                cancelRefreshing();
                 mIsUpdating = false;
+                cancelRefreshing();
                 if(!GitHubAPI.getInstance().hasLastResponseNextPage()) {
                     mEndOfTheList = true;
                 }
 
                 if(mRepos.isEmpty()) {
-                    mListStatusView.findViewById(R.id.tvRepeatButton).setVisibility(View.GONE);
-                    mListStatusView.findViewById(R.id.progressBar).setVisibility(View.GONE);
-                    mListStatusView.findViewById(R.id.tvEmptyMessage).setVisibility(View.VISIBLE);
-                    ((TextView)mListStatusView.findViewById(R.id.tvEmptyMessage)).setText(R.string.no_repositories);
-                    if(mListView.getFooterViewsCount()==0) {
-                        mListView.addFooterView(mListStatusView, null, false);
-                        mListView.setFooterDividersEnabled(false);
-                    }
+                    showFooterMessage(getString(R.string.no_repositories));
                 }
             }
 
             @Override
             public void onFailure(int error_code) {
-                defaultRequestFailureAction(error_code);
+                failureHandler(error_code);
             }
         });
 
 
     }
 
-
-    private void loadMoreRepos() {
+    @Override
+    protected void loadMoreItems() {
         Log.i(TAG," -- Loading more!");
         mIsUpdating = true;
+        showFooterLoading();
         mPage++;
         GitHubAPI.getInstance().getRepositoriesList( PER_PAGE, mPage, new RequestCallback<List<Repository>>() {
             @Override
             public void onSuccess(List<Repository> commitList) {
-                if(mListView.getFooterViewsCount()>0) mListView.removeFooterView(mListStatusView);
+                detachFooterFromList();
 
                 mRepos.addAll(commitList);
                 mAdapter.notifyDataSetChanged();
@@ -263,31 +222,15 @@ public class RepositoryListFragment extends AlerterInterfaceFragment implements 
         } );
     }
 
+
     private void failureHandler(int error_code) {
         if(error_code==GitHubAPI.ERR_CODE_CONFLICT) {
-            mListStatusView.findViewById(R.id.progressBar).setVisibility(View.GONE);
-            mListStatusView.findViewById(R.id.tvEmptyMessage).setVisibility(View.VISIBLE);
-            ((TextView)(mListStatusView.findViewById(R.id.tvEmptyMessage))).setText(getString(R.string.no_commits));
+            showFooterMessage(getString(R.string.no_repositories));
         } else {
             defaultRequestFailureAction(error_code);
         }
     }
 
-    @Override
-    public void onRefresh() {
-        loadFirstRepos();
-    }
-
-    public void cancelRefreshing() {
-        if(mSwipeRefreshLayout!=null && mSwipeRefreshLayout.isRefreshing()) {
-            mSwipeRefreshLayout.setRefreshing(false);
-        }
-    }
-
-    @Override
-    protected void processRequestFailure(int error_code) {
-        ((AlertCaller)getActivity()).showAlertDialog(error_code, true, true, null, null);
-    }
 
     public class RepositoryListAdapter extends ArrayAdapter<Repository> {
 

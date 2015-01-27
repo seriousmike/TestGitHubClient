@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.util.Log;
 
 import ru.seriousmike.testgithubclient.R;
-import ru.seriousmike.testgithubclient.core.AlerterInterfaceFragment;
 import ru.seriousmike.testgithubclient.core.SingleFragmentActivity;
 import ru.seriousmike.testgithubclient.fragments.AlertDialogFragment;
 import ru.seriousmike.testgithubclient.fragments.RepositoryListFragment;
@@ -49,6 +48,6 @@ public class RepositoryListActivity extends SingleFragmentActivity {
     @Override
     public void clickedNegative(int event_code) {
         ((RepositoryListFragment) getFragmentManager().findFragmentById(R.id.fragmentContainer)).cancelRefreshing();
-        ((RepositoryListFragment) getFragmentManager().findFragmentById(R.id.fragmentContainer)).showRefreshFooter();
+        ((RepositoryListFragment) getFragmentManager().findFragmentById(R.id.fragmentContainer)).showFooterButton();
     }
 }
