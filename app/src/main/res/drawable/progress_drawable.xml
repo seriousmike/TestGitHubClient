@@ -12,4 +12,13 @@
             </shape>
         </clip>
     </item>
+    <item android:id="@android:id/progress">
+        <clip>
+            <shape>
+                <gradient android:startColor="@color/color_accent"
+                          android:endColor="@color/color_accent_dark"
+                          android:angle="0" />
+            </shape>
+        </clip>
+    </item>
 </layer-list>

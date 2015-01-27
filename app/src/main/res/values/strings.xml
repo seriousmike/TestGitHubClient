@@ -29,6 +29,7 @@
     <string name="action_sign_in">Войти</string>
     <string name="error_field_required">Заполните это поле</string>
     <string name="title_activity_login">Авторизация</string>
+    <string name="connecting">Соединение&#8230;</string>
 
     <!-- СПИСОК РЕПОЗИТОРИЕВ / ГЛАВНЫЙ ЭКРАН -->
     <string name="title_activity_repository_list">Доступные репозитории</string>
