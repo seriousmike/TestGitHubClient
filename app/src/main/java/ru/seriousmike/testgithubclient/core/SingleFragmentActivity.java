@@ -1,11 +1,11 @@
 package ru.seriousmike.testgithubclient.core;
 
-import android.app.Activity;
 import android.app.DialogFragment;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.MenuItem;
 
 import ru.seriousmike.testgithubclient.R;
@@ -15,24 +15,29 @@ import ru.seriousmike.testgithubclient.fragments.AlertDialogFragment;
  * Created by SeriousM on 04.01.2015.
  */
 public abstract class SingleFragmentActivity extends ActionBarActivity implements AlerterInterfaceFragment.AlertCaller, AlertDialogFragment.DialogInteraction {
+    private static final String TAG = "sm_SingleFragmentActivity";
+
     protected abstract Fragment createFragment();
 
-    private boolean mIsVisible = false;
+    private boolean mIsStopped = false;
 
-    protected boolean isActivityVisible() {
-        return mIsVisible;
+    protected boolean isActivityAfterOnStop() {
+        Log.i(TAG, "Activity is " + (mIsStopped ?" after retaining  ":" not after ") );
+        return mIsStopped;
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        mIsVisible = true;
+    protected void onStart() {
+        super.onStart();
+        Log.i(TAG,"onStart");
+        mIsStopped = false;
     }
 
     @Override
-    protected void onPause() {
-        super.onResume();
-        mIsVisible = false;
+    protected void onStop() {
+        super.onStop();
+        Log.i(TAG,"onStop");
+        mIsStopped = true;
     }
 
 
@@ -63,7 +68,7 @@ public abstract class SingleFragmentActivity extends ActionBarActivity implement
 
     @Override
     public void showAlertDialog(int error_code, boolean enablePositiveButton, boolean enableNegativeButton, String customPositiveButtonTitle, String customNegativeButtonTitle) {
-        if(isActivityVisible()) {
+        if(!isActivityAfterOnStop()) {
             DialogFragment alertFragment = AlertDialogFragment.newInstance(error_code, enablePositiveButton, customPositiveButtonTitle, enableNegativeButton, customNegativeButtonTitle);
             alertFragment.show(getFragmentManager(),"dialog");
         }

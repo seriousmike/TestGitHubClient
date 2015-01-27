@@ -3,6 +3,7 @@
     <string name="error_msg_401">Авторизуйтесь</string>
     <string name="error_msg_401_bad_credentials">Логин/пароль указаны некорректно</string>
 
+    <string name="error_msg_service_unavailable">Не удалось подключиться к серверу</string>
     <string name="error_msg_no_internet">Подключение к интернету отсутствует.</string>
     <string name="error_msg_unknown">Неизвестная ошибка!</string>
     <string name="error_msg_unforseen">Непредвиденная ошибка</string>

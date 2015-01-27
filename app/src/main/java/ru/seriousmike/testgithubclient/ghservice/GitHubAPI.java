@@ -4,6 +4,9 @@ package ru.seriousmike.testgithubclient.ghservice;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.AsyncTask;
+import android.os.Handler;
+import android.os.HandlerThread;
 import android.util.Base64;
 import android.util.Log;
 import android.widget.Toast;
@@ -16,7 +19,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -59,6 +61,7 @@ public class GitHubAPI {
     public static final int ERR_CODE_CONFLICT = 409;
     public static final int ERR_CODE_UNKONWN_ERROR = 666;
     public static final int ERR_CODE_NO_INTERNET = 665;
+    public static final int ERR_CODE_SERVICE_UNAVAILABLE = 667;
 
     private static final String ERR_MSG_NULL_CONTEXT = "NULL CONTEXT FOUND! Error accessing SharedPreferences";
 
@@ -138,7 +141,7 @@ public class GitHubAPI {
 
             @Override
             public void failure(RetrofitError error) {
-                cb.onFailure(defineError(error));
+                defineError(error, cb);
             }
         });
     }
@@ -167,7 +170,7 @@ public class GitHubAPI {
 
             @Override
             public void failure(RetrofitError error) {
-                cb.onFailure(defineError(error));
+                defineError(error, cb);
             }
         });
     }
@@ -191,7 +194,7 @@ public class GitHubAPI {
 
             @Override
             public void failure(RetrofitError error) {
-                cb.onFailure(defineError(error));
+                defineError(error, cb);
             }
         });
     }
@@ -242,7 +245,6 @@ public class GitHubAPI {
                         int nextPage = getNextPageFromLastResponse();
                         mService.checkAuth(encodedAuthString, nextPage, this);
                     } else {
-
                         createToken(login, password, new RequestCallback<Response>() {
                             @Override
                             public void onSuccess(Response response) {
@@ -259,7 +261,7 @@ public class GitHubAPI {
 
                 @Override
                 public void failure(RetrofitError error) {
-                    cb.onFailure(defineError(error));
+                    defineError(error, cb);
                 }
             });
         } catch(UnsupportedEncodingException e) {
@@ -297,7 +299,7 @@ public class GitHubAPI {
 
                 @Override
                 public void failure(RetrofitError error) {
-                    cb.onFailure(defineError(error));
+                    defineError(error, cb);
                 }
             });
         } catch(UnsupportedEncodingException e) {
@@ -390,40 +392,65 @@ public class GitHubAPI {
         return -1;
     }
 
-
-    public boolean isInternetAvailable() {
+    /**
+     * проверяет доступность сети
+     * @return true если сеть доступна
+     */
+    public boolean isNetworkAvailable() {
         ConnectivityManager cm = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = cm.getActiveNetworkInfo();
-        if(activeNetworkInfo != null && activeNetworkInfo.isConnectedOrConnecting()) {
-            try {
-                if( InetAddress.getByName(GitHubAPI.API_URL).isReachable(1000)) {
-                    return true;
-                }
-            } catch( Exception e) {
-                // nothing to do
-            }
-        }
-        return false;
+        return (activeNetworkInfo != null && activeNetworkInfo.isConnectedOrConnecting());
     }
 
 
+    /**
+     * Проверяет можно ли вообще подключиться к серверу
+     * Есть сеть и нет интернета или просто гитхаб лёг
+     * @param cb коллбэк всегда дёргает onFailure
+     */
+    public void checkServiceAvailability(final RequestCallback cb) {
+
+        new AsyncTask<Void,Void,Boolean>() {
+            @Override
+            public Boolean doInBackground(Void... params) {
+                try {
+                    return InetAddress.getByName(GitHubAPI.API_URL).isReachable(500);
+                } catch (Exception e) {
+                    Log.e(TAG, toString());
+                    return false;
+                }
+            }
+
+            @Override
+            public void onPostExecute(Boolean isReachable) {
+                if (isReachable) {
+                    cb.onFailure(ERR_CODE_UNKONWN_ERROR);
+                } else {
+                    cb.onFailure(ERR_CODE_SERVICE_UNAVAILABLE);
+                }
+            }
+
+        }.execute();
+
+    }
 
     /**
      * Перехватывает и разбирает стандартные ошибки запросов и отдаёт адекватные сообщения на активность/фрагмент
      * @param error - стандартная ошибка RetrofitError
      */
-    private int defineError(RetrofitError error) {
+    private void defineError(RetrofitError error, final RequestCallback cb) {
         Log.e(TAG, error.toString());
 
-        if(error.getResponse()==null) {
+        int probableReason = ERR_CODE_UNKONWN_ERROR;
 
+        if(error.getResponse()==null) {
             if(mContext != null) {
-                if(!isInternetAvailable()) return ERR_CODE_NO_INTERNET;
+                if(!isNetworkAvailable()) {
+                    probableReason = ERR_CODE_NO_INTERNET;
+                }
             } else {
                 Log.e(TAG,ERR_MSG_NULL_CONTEXT);
             }
-            return ERR_CODE_UNKONWN_ERROR;
-
         } else {
 
             JsonObject errorJson = (JsonObject)error.getBodyAs(JsonObject.class);
@@ -447,8 +474,15 @@ public class GitHubAPI {
             } catch (NullPointerException e) {
                 Log.e(TAG, "Probably no respone body. "+e.getLocalizedMessage());
             }
-            return error.getResponse().getStatus();
+            probableReason = error.getResponse().getStatus();
 
+        }
+
+        // если ошибка всё ещё неопределена, то проверяем доступность сервиса
+        if(probableReason==ERR_CODE_UNKONWN_ERROR) {
+            checkServiceAvailability(cb);
+        } else {
+            cb.onFailure(probableReason);
         }
 
     }

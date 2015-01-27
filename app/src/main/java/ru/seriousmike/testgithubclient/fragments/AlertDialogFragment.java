@@ -98,6 +98,9 @@ public class AlertDialogFragment extends DialogFragment {
             case GitHubAPI.ERR_CODE_FORBIDDEN:
                 errtxt = getString(R.string.error_msg_limit_reached);
                 break;
+            case GitHubAPI.ERR_CODE_SERVICE_UNAVAILABLE:
+                errtxt = getString(R.string.error_msg_service_unavailable);
+                break;
             case EVENT_LOGOUT:
                 errtxt = getString(R.string.event_trying_to_logout)+" "+GitHubAPI.getInstance().getCurrentUser().login+"?";
                 break;

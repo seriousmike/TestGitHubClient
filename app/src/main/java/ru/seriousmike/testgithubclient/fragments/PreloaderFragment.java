@@ -51,7 +51,7 @@ public class PreloaderFragment extends AlerterInterfaceFragment {
                     processError(error_code);
                 }
             });
-        } else if(GitHubAPI.getInstance().isInternetAvailable()) {
+        } else if(GitHubAPI.getInstance().isNetworkAvailable()) {
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
