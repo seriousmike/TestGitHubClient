@@ -48,17 +48,18 @@ public class PreloaderFragment extends AlerterInterfaceFragment {
                 @Override
                 public void onFailure(int error_code) {
                     Log.i(TAG, "error_code " + error_code);
-                    proceedToAuthorization();
+                    processError(error_code);
                 }
             });
-        } else {
+        } else if(GitHubAPI.getInstance().isInternetAvailable()) {
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    proceedToAuthorization();
+                    processError(GitHubAPI.ERR_CODE_UNAUTH);
                 }
             }, 500);
-
+        } else {
+            processError(GitHubAPI.ERR_CODE_NO_INTERNET);
         }
 
     }
@@ -70,8 +71,8 @@ public class PreloaderFragment extends AlerterInterfaceFragment {
         getActivity().finish();
     }
 
-    private void proceedToAuthorization() {
-        defaultRequestFailureAction(GitHubAPI.ERR_CODE_UNAUTH);
+    private void processError(int error_code) {
+        defaultRequestFailureAction(error_code);
         getActivity().overridePendingTransition(R.anim.activity_fade_in, R.anim.activity_fade_out);
     }
 }

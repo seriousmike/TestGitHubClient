@@ -389,6 +389,11 @@ public class GitHubAPI {
     }
 
 
+    public boolean isInternetAvailable() {
+        ConnectivityManager cm = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = cm.getActiveNetworkInfo();
+        return (activeNetworkInfo != null && activeNetworkInfo.isConnected());
+    }
 
 
 
@@ -402,11 +407,7 @@ public class GitHubAPI {
         if(error.getResponse()==null) {
 
             if(mContext != null) {
-                ConnectivityManager cm = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
-                NetworkInfo activeNetworkInfo = cm.getActiveNetworkInfo();
-                if(activeNetworkInfo == null || !activeNetworkInfo.isConnected()) {
-                    return ERR_CODE_NO_INTERNET;
-                }
+                if(!isInternetAvailable()) return ERR_CODE_NO_INTERNET;
             } else {
                 Log.e(TAG,ERR_MSG_NULL_CONTEXT);
             }
