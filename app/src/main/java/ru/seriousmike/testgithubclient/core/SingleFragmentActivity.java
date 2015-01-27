@@ -17,6 +17,25 @@ import ru.seriousmike.testgithubclient.fragments.AlertDialogFragment;
 public abstract class SingleFragmentActivity extends ActionBarActivity implements AlerterInterfaceFragment.AlertCaller, AlertDialogFragment.DialogInteraction {
     protected abstract Fragment createFragment();
 
+    private boolean mIsVisible = false;
+
+    protected boolean isActivityVisible() {
+        return mIsVisible;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mIsVisible = true;
+    }
+
+    @Override
+    protected void onPause() {
+        super.onResume();
+        mIsVisible = false;
+    }
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,8 +63,10 @@ public abstract class SingleFragmentActivity extends ActionBarActivity implement
 
     @Override
     public void showAlertDialog(int error_code, boolean enablePositiveButton, boolean enableNegativeButton, String customPositiveButtonTitle, String customNegativeButtonTitle) {
-        DialogFragment alertFragment = AlertDialogFragment.newInstance(error_code, enablePositiveButton, customPositiveButtonTitle, enableNegativeButton, customNegativeButtonTitle);
-        alertFragment.show(getFragmentManager(),"dialog");
+        if(isActivityVisible()) {
+            DialogFragment alertFragment = AlertDialogFragment.newInstance(error_code, enablePositiveButton, customPositiveButtonTitle, enableNegativeButton, customNegativeButtonTitle);
+            alertFragment.show(getFragmentManager(),"dialog");
+        }
     }
 
     /**

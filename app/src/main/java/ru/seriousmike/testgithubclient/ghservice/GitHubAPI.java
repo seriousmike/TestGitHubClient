@@ -15,6 +15,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -392,7 +394,16 @@ public class GitHubAPI {
     public boolean isInternetAvailable() {
         ConnectivityManager cm = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = cm.getActiveNetworkInfo();
-        return (activeNetworkInfo != null && activeNetworkInfo.isConnected());
+        if(activeNetworkInfo != null && activeNetworkInfo.isConnectedOrConnecting()) {
+            try {
+                if( InetAddress.getByName(GitHubAPI.API_URL).isReachable(1000)) {
+                    return true;
+                }
+            } catch( Exception e) {
+                // nothing to do
+            }
+        }
+        return false;
     }
 
 
