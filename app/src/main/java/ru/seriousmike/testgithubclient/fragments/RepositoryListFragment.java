@@ -41,7 +41,7 @@ public class RepositoryListFragment extends AbstractListFragment {
     private ListView mListView;
 
 
-    private static final int PER_PAGE = 3;
+    private static final int PER_PAGE = 30;
     private int mPage;
     private boolean mIsUpdating = false;
     private boolean mEndOfTheList = false;

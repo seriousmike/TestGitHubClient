@@ -22,7 +22,6 @@ import java.util.List;
 
 import ru.seriousmike.testgithubclient.R;
 import ru.seriousmike.testgithubclient.core.AbstractListFragment;
-import ru.seriousmike.testgithubclient.core.AlerterInterfaceFragment;
 import ru.seriousmike.testgithubclient.ghservice.GitHubAPI;
 import ru.seriousmike.testgithubclient.ghservice.data.Commit;
 import ru.seriousmike.testgithubclient.ghservice.data.RequestCallback;
