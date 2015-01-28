@@ -178,8 +178,10 @@ public class RepositoryFragment extends AbstractListFragment {
     @Override
     protected void loadFirstItems() {
         mIsUpdating = true;
+        if(mCommits.size()==0) {
+            showFooterLoading();
+        }
 
-        showFooterLoading();
 
         mEndOfTheList = false;
         mPage = 1;

@@ -162,7 +162,9 @@ public class RepositoryListFragment extends AbstractListFragment {
     protected void loadFirstItems() {
         Log.i(TAG,"first request");
         mPage = 1;
-        showFooterLoading();
+        if(mRepos.size()==0) {
+            showFooterLoading();
+        }
 
         mEndOfTheList = false;
         mPage = 1;
