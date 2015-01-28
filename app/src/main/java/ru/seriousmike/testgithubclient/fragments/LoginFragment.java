@@ -115,8 +115,6 @@ public class LoginFragment extends AlerterInterfaceFragment {
             GitHubAPI.getInstance().getAuthorization(mLoginView.getText().toString(), mPasswordView.getText().toString(), new RequestCallback<UserInfo>() {
                 @Override
                 public void onSuccess(UserInfo userInfo) {
-                    Toast.makeText(getActivity(), userInfo.name + "/" + userInfo.login, Toast.LENGTH_SHORT).show();
-
                     Intent i = new Intent(getActivity(), RepositoryListActivity.class);
                     i.setFlags( Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK );
                     startActivity(i);
